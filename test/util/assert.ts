@@ -13,8 +13,22 @@ export function mapEqual(mapA: Map<any, any>, mapB: Map<any, any>): boolean {
     return true;
 }
 
+export function arrayEqual(arrA: any[], arrB: any[]): boolean {
+    if (arrA.length !== arrB.length){
+        return false;
+    }
+
+    for (let i = 0; i < arrA.length; i++){
+        if (arrA[i] !== arrB[i]){
+            return false;
+        }
+    }
+    return true;
+}
+
 export function cacheContentEqual(actualCache: IKeyValueCache<any>, expectedCache: Map<string, any>): boolean {
     if (actualCache.size() !== expectedCache.size){
+        console.log(`Size unmatch: expected ${expectedCache.size} but got ${actualCache.size()}`);
         return false;
     }
 

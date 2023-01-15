@@ -6,7 +6,8 @@ module.exports = {
     testRegex: "(/test/.*|(\\.|/)(test|spec))\\.(tsx?|jsx?)$",
     modulePathIgnorePatterns: ["<rootDir>/test/util/"],
     moduleNameMapper: {
-        '^@/(.*)$': '<rootDir>/src/$1'
+        '^@/(.*)$': '<rootDir>/src/$1',
+        '^@test/(.*)$': '<rootDir>/test/$1'
     },
     clearMocks: true,
 }

@@ -1,6 +1,7 @@
-import { KeyValueCacheMap } from "@/cache/KeyValueCacheMap";
-import { cacheContentEqual } from "../../util/assert";
-import { mockGetNowWithTimes } from "../../util/mock";
+import { KeyValueCacheMap } from "@/cache";
+import { CachedValue } from "@/types";
+import { cacheContentEqual } from "@test/util/assert";
+import { MockCurrentTimeState, mockTimeByState } from "@test/util/mockTime";
 
 describe("KeyValueCacheMap", () => {
     // never expired + no size limit
@@ -25,6 +26,12 @@ describe("KeyValueCacheMap", () => {
         baseCacheExpected.set("A", "new aaa!");
         expect(cacheContentEqual(baseCache, baseCacheExpected)).toBeTruthy();
         expect(baseCache.get("Not in cache")).toBeUndefined();
+    });
+
+    it("getStoredItem", () => {
+        expect(baseCache["getStoredItem"]("Not in cache")).toBeUndefined();
+        let value: CachedValue<string> | undefined = baseCache["getStoredItem"]("A");
+        expect(value?.value).toBe("aaa");
     });
 
     it("put invalid", () => {
@@ -59,42 +66,63 @@ describe("KeyValueCacheMap", () => {
 });
 
 describe("KeyValueCacheMap with ttl", () => {
-    it("ttl", () => {
-        // [create, 5 get no timeout, 11 TC timeout, 30 get no timeout, 65 TB get timeout,
-        //  70 create TD, 71 get no timeout, 82 get no timeout]
-        mockGetNowWithTimes(1673519400, [0, 5, 11, 30, 65, 70, 71, 82]);
+    let fakeNow = 1673519400;
+    let ttlCache: KeyValueCacheMap<string>;
+    let ttlCacheExpected: Map<string, string>;
+
+    beforeEach(() => {
+        mockTimeByState();
+        MockCurrentTimeState.time = fakeNow;
 
         // default ttl = 10s
-        let ttlCache: KeyValueCacheMap<string> = new KeyValueCacheMap<string>(10);
+        ttlCache = new KeyValueCacheMap<string>(10);
         ttlCache.put("TA", "ta", undefined); // forever
         ttlCache.put("TB", "tb", 60); // 1 minute
         ttlCache.put("TC", "t1234", null); // default = 10s
 
-        let ttlCacheExpected: Map<string, string> = new Map<string, string>([
+        ttlCacheExpected = new Map<string, string>([
             ["TA", "ta"],
             ["TB", "tb"],
             ["TC", "t1234"],
         ]);
+    });
 
-        // +5s
+    it("ttl", () => {
+        MockCurrentTimeState.time = fakeNow + 5 * 1000;
         expect(ttlCache.get("TA")).toBe("ta");
-        // +11s
+
+        MockCurrentTimeState.time = fakeNow + 11 * 1000;
         expect(ttlCache.get("TC")).toBeUndefined();
         ttlCacheExpected.delete("TC");
-        // +30s
+
+        MockCurrentTimeState.time = fakeNow + 30 * 1000;
         expect(ttlCache.get("TB")).toBe("tb");
-        // +65s
+
+        MockCurrentTimeState.time = fakeNow + 65 * 1000;
         expect(ttlCache.get("TB")).toBeUndefined();
         ttlCacheExpected.delete("TB");
-        // +70s add anther item
+
+        MockCurrentTimeState.time = fakeNow + 70 * 1000;
         ttlCache.put("TD", "t-middle", null); // default = 10s
         ttlCacheExpected.set("TD", "t-middle");
         expect(ttlCache.get("TD")).toBe("t-middle");
-        // +82
+
+        MockCurrentTimeState.time = fakeNow + 82 * 1000;
         expect(ttlCache.get("TD")).toBeUndefined();
         ttlCacheExpected.delete("TD");
+
         // afterwards
+        MockCurrentTimeState.time = fakeNow + 1000 * 1000;
         expect(ttlCache.get("TA")).toBe("ta");
+    });
+
+    it("clearExpiredItems", () => {
+        MockCurrentTimeState.time = fakeNow + 82 * 1000;
+        // TB & TC timeout
+        ttlCacheExpected.delete("TB");
+        ttlCacheExpected.delete("TC");
+        ttlCache.clearExpiredItems();
+        expect(cacheContentEqual(ttlCache, ttlCacheExpected)).toBeTruthy();
     });
 });
 
@@ -115,4 +143,54 @@ describe("KeyValueCacheMap FIFO", () => {
         overflowCacheExpected.set("Z", "Replace A");
         overflowCacheExpected.delete("A");
     });
+});
+
+describe("Individual timeout", () => {
+    jest.useFakeTimers();
+    let fakeNow = 1673519400;
+    let ttlCache: KeyValueCacheMap<string>;
+    let ttlCacheExpected: Map<string, string>;
+
+    beforeEach(() => {
+        mockTimeByState();
+        MockCurrentTimeState.time = fakeNow;
+        ttlCache = new KeyValueCacheMap(1, undefined, true);
+        ttlCacheExpected = new Map();
+        ttlCache.put("TA", "ta", undefined); // forever
+        ttlCache.put("TB", "tb", 2); // 3 seconds
+        ttlCache.put("TC", "t1234", null); // default = 1s
+        ttlCache.put("TD", "ok", 8); // 8 seconds
+        ttlCache.put("TE", "first", 2);
+
+        ttlCacheExpected = new Map<string, string>([
+            ["TA", "ta"],
+            ["TB", "tb"],
+            ["TC", "t1234"],
+            ["TD", "ok"],
+            ["TE", "first"],
+        ]);
+    })
+
+    it("Individual timeout", () => {
+        // after 1.1 seconds, TC timeout
+        MockCurrentTimeState.time = fakeNow+1100;
+        jest.advanceTimersByTime(1100);
+        ttlCacheExpected.delete("TC");
+        expect(cacheContentEqual(ttlCache, ttlCacheExpected)).toBeTruthy();
+        // replace an item when the last item with that key is not yet timeout
+        ttlCache.put("TE", "second", 100);
+        
+        // after 5 seconds, TB timeout, TE with new value should not be clear by the last timeout
+        MockCurrentTimeState.time = fakeNow+5000;
+        jest.advanceTimersByTime(5000);
+        ttlCacheExpected.delete("TB");
+        ttlCacheExpected.set("TE", "second");
+        expect(cacheContentEqual(ttlCache, ttlCacheExpected)).toBeTruthy();
+    });
+
+    it("clear", () => {
+        jest.spyOn(global, 'clearTimeout');
+        ttlCache.clear();
+        expect(clearTimeout).toHaveBeenCalledTimes(4);
+    })
 });

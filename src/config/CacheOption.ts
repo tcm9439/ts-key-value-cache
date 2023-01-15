@@ -1,20 +1,8 @@
-import { Integer } from "./types/CommonTypes";
-
-export enum TimeoutMode {
-    /**
-     * Check if the cache item is expired when get(key_of_that_item) is call
-     */
-    ON_GET,
-    // INDIVIDUAL_TIMEOUT,
-    // SCHEDULE_HOUSEKEEP
-}
-
-export enum CacheType {
-    /**
-     * By js map
-     */
-    MAP
-}
+import { Integer } from "@/util/CommonTypes";
+import { CacheType, TimeoutMode } from "@/types";
+import { QueueConfig } from '@/config/QueueConfig';
+import { InvalidConfigException } from "@/exception";
+import { isPositiveInteger } from "@/util/CommonConstrains";
 
 export class CacheOption {
     /**
@@ -22,19 +10,27 @@ export class CacheOption {
      * If undefined, never timeout
      */
     private _defaultTTL?: Integer
+
     /**
      * Max num of key-value pair to store.
      * If undefined, no limit
      */
     private _maxSize?: Integer;
+
     /**
      * How/When to delete expired cache item
      */
-    private _timeoutMode: TimeoutMode = TimeoutMode.ON_GET;
+    private _timeoutMode: TimeoutMode = TimeoutMode.ON_GET_ONLY;
+
     /**
      * Which cache implementation to use
      */
     private _cacheType: CacheType = CacheType.MAP;
+
+    /**
+     * The config for the queues if use CacheType.Queues
+     */
+    private _queueConfigs?: QueueConfig[];
 
     constructor(cacheType: CacheType = CacheType.MAP) {
         this._cacheType = cacheType;
@@ -64,15 +60,10 @@ export class CacheOption {
 		return this._cacheType;
 	}
 
-    /**
-     * Setter cacheType
-     * @param {CacheType } value
-     */
-	public set cacheType(value: CacheType ) {
-		this._cacheType = value;
-	}
-
     public set defaultTTL(value: Integer){
+        if (!isPositiveInteger(value)){
+            throw new InvalidConfigException("Default TTL must be undefined (don't need to call setter) or a positive integer.")
+        }
         this._defaultTTL = value;
     }
 
@@ -82,11 +73,26 @@ export class CacheOption {
     }
 
     public set maxSize(value: Integer){
+        if (!isPositiveInteger(value)){
+            throw new InvalidConfigException("Max size must be positive integer.")
+        }
         this._maxSize = value;
     }
 
     // @ts-expect-error
     public get maxSize(): Integer | undefined {
         return this._maxSize;
+    }
+
+    public set queueConfigs(queueConfigs: QueueConfig[]){
+        if (queueConfigs.length <= 0){
+            throw new InvalidConfigException("You must have one or more queues.");
+        }
+        this._queueConfigs = queueConfigs;
+    }
+
+    // @ts-expect-error
+    public get queueConfigs(): QueueConfig[] | undefined {
+        return this._queueConfigs
     }
 }

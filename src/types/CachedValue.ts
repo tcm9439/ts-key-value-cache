@@ -1,22 +1,35 @@
-import { Integer, Timestamp } from "./CommonTypes";
+import { Integer, Timestamp, ID } from "@/util/CommonTypes";
 
 export class CachedValue<V> {
-    private _value: V;
     /**
-     * time to live in seconds
-     * If undefine, never timeout
+     * Next sequence number as unique ID for each CachedValue object.
      */
-    private _ttl?: Integer;
+    private static nextItemID: ID = 1;
+
+    // private _itemID: ID;
+
+    private _value: V;
+
     /**
      * Unix timestamp. After this time, this cache is expired.
      * If undefine, never timeout
      */
     private _expireTS?: Timestamp;
 
-    constructor(value: V, ttl?: Integer) {
+    /**
+     * The ID returned by the setTimeout if individualTimeout mode is on & this item has ttl
+     */
+    private _timeoutID?: NodeJS.Timeout;
+
+    // private static getID(): ID{
+    //     return this.nextItemID++;
+    // }
+
+    constructor(value: V, ttl?: Integer, timeoutID?: NodeJS.Timeout) {
+        // this._itemID = CachedValue.getID();
         this._value = value;
-        this._ttl = ttl;
         this._expireTS = ttl != undefined ? Date.now() + ttl*1000 : undefined;
+        this._timeoutID = timeoutID;
     }
 
     /**
@@ -28,14 +41,38 @@ export class CachedValue<V> {
     }
 
     /**
-     *
+     * Check if this cache item has already expired,
+     * i.e. insertion time + ttl < Date.now
      * @returns true if already expired
      */
     public hasExpired(): boolean {
-        let now = Date.now();
-        if (this._expireTS != null && this._expireTS < now) {
+        if (this._expireTS != null && this._expireTS < Date.now()) {
             return true;
         }
         return false;
     }
+
+    public get expireTS(): Timestamp | undefined {
+        return this._expireTS;
+    }
+
+    /**
+     * Getter timeoutID
+     * @return {NodeJS.Timeout}
+     */
+	public get timeoutID(): NodeJS.Timeout | undefined {
+		return this._timeoutID;
+	}
+
+    // public isTheSameItem(itemToCompare: CachedValue<V>): boolean {
+    //     return this._itemID === itemToCompare._itemID;
+    // }
+
+    // /**
+    //  * Getter itemID
+    //  * @return {ID}
+    //  */
+	// public get itemID(): ID {
+	// 	return this._itemID;
+	// }
 }

@@ -1,4 +1,4 @@
-import { mockGetNow } from './mock';
+import { mockGetNow, MockCurrentTimeState, mockTimeByState } from './mockTime';
 
 describe("ts test util", () => {
     it("mock current timestamp", () => {
@@ -8,4 +8,12 @@ describe("ts test util", () => {
         expect(Date.now()).toBe(fakeNow);
         expect(Date.now()).toBe(fakeNow+10000);
     });
+
+    it("mock status", () => {
+        mockTimeByState();
+        MockCurrentTimeState.time = 0;
+        expect(Date.now()).toBe(0);
+        MockCurrentTimeState.time = 100;
+        expect(Date.now()).toBe(100);
+    })
 });

@@ -1,9 +1,10 @@
-import { mockGetNowWithTimes } from '../../util/mock';
-import { CachedValue } from '../../../src/types/CachedValue';
+import { MockCurrentTimeState, mockTimeByState } from '@test/util/mockTime';
+import { CachedValue } from '@/types/CachedValue';
 
 describe("CacheValue", ()=>{
     let fakeNow = 1673519400;
-    mockGetNowWithTimes(fakeNow, [25, 70, 1000])
+    mockTimeByState();
+    MockCurrentTimeState.time = fakeNow;
     let noExpireValue = new CachedValue("no");
     let withExpireValue = new CachedValue("yes", 60);
 
@@ -13,11 +14,11 @@ describe("CacheValue", ()=>{
     })
 
     it("hasExpired?", ()=>{
-        // +25
+        MockCurrentTimeState.time = fakeNow + 25*1000;
         expect(withExpireValue.hasExpired()).toBe(false)
-        // +70
+        MockCurrentTimeState.time = fakeNow + 70*1000;
         expect(withExpireValue.hasExpired()).toBe(true)
-        // +1000
+        MockCurrentTimeState.time = fakeNow + 1000*1000;
         expect(noExpireValue.hasExpired()).toBe(false)
     })
 })

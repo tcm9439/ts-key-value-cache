@@ -1,6 +1,7 @@
 export type Integer = number;
 export type Float = number;
 export type Timestamp = number;
+export type ID = Integer;
 
 export type NullableString = string | null;
 export type NullableNumber = number | null;

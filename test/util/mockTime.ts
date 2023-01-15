@@ -1,4 +1,4 @@
-import { Integer, Timestamp } from "@/types/CommonTypes";
+import { Integer, Timestamp } from "@/util/CommonTypes";
 
 export function mockGetNow(timestamps: Timestamp[]): void {
     let mockedGetNow: jest.Mock<any, any> = jest.fn()
@@ -14,4 +14,18 @@ export function mockGetNowWithTimes(firstTS: Timestamp, secondsAfterFirst: Integ
         timestamps.push(firstTS + after * 1000);
     }
     mockGetNow(timestamps);
+}
+
+export class MockCurrentTimeState {
+    public static time: Timestamp;
+}
+
+export function mockTimeByState(){
+    let mockedGetNow: jest.Mock<any, any> = jest.fn()
+    mockedGetNow.mockImplementation(() => MockCurrentTimeState.time);
+    Date.now = mockedGetNow
+}
+
+export async function sleep(ms: Integer) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
