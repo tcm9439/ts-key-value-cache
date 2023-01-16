@@ -40,6 +40,29 @@ function getQueueConfigForTest(){
     return queueConfigs;
 }
 
+describe("KeyValueCacheQueues invalid config", () => {
+    let cache: KeyValueCacheQueues<string>;
+    let queueConfigs: QueueConfig[];
+
+    it("null config", () => {
+        expect(() => {
+            cache = new KeyValueCacheQueues(undefined);
+        }).toThrowError("No queue config is supplied.");
+        
+        expect(() => {
+            cache = new KeyValueCacheQueues([]);
+        }).toThrowError("No queue config is supplied.");
+    })
+
+    it("duplicated ttl", () => {
+        queueConfigs = getQueueConfigForTest();
+        queueConfigs.push(new QueueConfig(10, 4));
+        expect(() => {
+            cache = new KeyValueCacheQueues(queueConfigs);
+        }).toThrowError("Require unique ttl for each queue.");
+    })
+})
+
 describe("KeyValueCacheQueues", () => {
     let cache: KeyValueCacheQueues<string>;
     let expectedCache: Map<string, string>;

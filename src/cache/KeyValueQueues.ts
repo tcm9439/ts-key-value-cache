@@ -80,10 +80,13 @@ export class KeyValueCacheQueues<V> extends KeyValueCacheMap<V>{
 
     constructor(queueConfigs: QueueConfig[] | undefined) {
         super(undefined, undefined, false);
-        if (queueConfigs === undefined){
+        if (queueConfigs === undefined || queueConfigs.length === 0){
             throw new InvalidConfigException("No queue config is supplied.")
         }
         for (const config of queueConfigs){
+            if (this._availableTTL.includes(config.ttl)){
+                throw new InvalidConfigException("Require unique ttl for each queue.")
+            }
             this._availableTTL.push(config.ttl);
             this._timeoutQueues.set(config.ttl, new TimeoutQueue(config.size))
         }
