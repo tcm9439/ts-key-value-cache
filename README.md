@@ -7,7 +7,9 @@ A local key-value cache with string as key and value of any type which support
 - housekeep function to clear the expired item in cache with O(k) times, where k is the number of expired items (Not applied to MAP implementation. For details, see [config](#config).)
 
 ## Installation
-```npm i ts-key-value-cache```
+```
+npm i ts-key-value-cache
+```
 
 ## Examples
 

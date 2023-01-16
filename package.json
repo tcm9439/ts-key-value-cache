@@ -4,7 +4,7 @@
     "description": "A typescript key-value cache that support time-to-live management.",
     "files": [
         "lib/**/*",
-        "./index.d.js"
+        "index.d.js"
     ],
     "main": "./lib/index.js",
     "types": "./index.d.js",
