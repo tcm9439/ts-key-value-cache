@@ -6,7 +6,7 @@ import { isPositiveInteger } from "@/util/CommonConstrains";
 
 export class CacheOption {
     /**
-     * Default ttl (seconds) of key-value pair if no ttl is supply when put()
+     * Default ttl (seconds) of key-value pair if null ttl is supply when put()
      * If undefined, never timeout
      */
     private _defaultTTL?: Integer

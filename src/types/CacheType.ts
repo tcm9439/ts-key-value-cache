@@ -5,14 +5,14 @@ export enum CacheType {
      */
     MAP,
     /**
-     * A extant of MAP which use a min-heap for faster expired item management. 
+     * An extension of MAP which use a min-heap for faster expired item management. 
      * Support arbitrary ttl.
      * 
      * If only a few cache item will time out, use MAP instead.
      */
     HEAP,
     /**
-     * A extant of MAP which use multiple FIFO queues for expired item management. 
+     * An extension of MAP which use multiple FIFO queues for expired item management. 
      * Each with a fixed ttl.
      * Can add item that won't expired.
      * 

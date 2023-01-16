@@ -12,7 +12,7 @@ export class QueueConfig {
     /**
      * 
      * @param ttl undefined stands for no ttl
-     * @param size 
+     * @param size maximum size of the queue, undefined if no limit
      */
     constructor(ttl?: Integer, size?: Integer){
         if (size && !isPositiveInteger(size)){

@@ -3,7 +3,8 @@
     "version": "1.1.0",
     "description": "A typescript key-value cache that support time-to-live management.",
     "files": [
-        "lib/**/*"
+        "lib/**/*",
+        "./index.d.js"
     ],
     "main": "./lib/index.js",
     "types": "./index.d.js",

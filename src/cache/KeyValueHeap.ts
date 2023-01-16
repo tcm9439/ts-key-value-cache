@@ -68,7 +68,7 @@ export class KeyValueCacheHeap<V> extends KeyValueCacheMap<V>{
 
     /**
      * See IKeyValueCache.
-     * Complexity: O(k) where k is the number of expired item
+     * Complexity: O(k log N) where k is the number of expired item
      */
     clearExpiredItems(): void {
         // pop out the item with the smallest expired ts & remove it
