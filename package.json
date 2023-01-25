@@ -9,7 +9,7 @@
     "types": "./lib/api-index.d.js",
     "repository": {
         "type": "git",
-        "url": "https://github.com/tcm9439/ts-type-value-cache.git"
+        "url": "https://github.com/tcm9439/ts-key-value-cache.git"
     },
     "scripts": {
         "test": "jest",

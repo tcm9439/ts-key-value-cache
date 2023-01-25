@@ -131,4 +131,4 @@ Set up the `CacheOption` by the setter of its attributes (listed below).
 | size   | integer > 0 or `undefined` | `undefined` | The maximum size of this queue, `undefined` means no limit. |
 
 ## Documentation
-Download the module from [git](https://github.com/tcm9439/ts-type-value-cache) and run `npm run doc` to get a full version of doc.
+Download the module from [git](https://github.com/tcm9439/ts-key-value-cache) and run `npm run doc` to get a full version of doc.
