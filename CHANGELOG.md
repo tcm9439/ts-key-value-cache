@@ -1,3 +1,7 @@
+## 1.1.4
+- Minify compiled /lib/
+- Fix type at IKeyValueCache
+
 ## 1.1.3
 ### Fix
 - Update github link
