@@ -1,6 +1,6 @@
 {
     "projectFolder": ".",
-    "mainEntryPointFilePath": "<projectFolder>/lib/index.d.ts",
+    "mainEntryPointFilePath": "<projectFolder>/lib-types/index.d.ts",
     "bundledPackages": [],
     "compiler": {
       "tsconfigFilePath": "<projectFolder>/tsconfig.json"

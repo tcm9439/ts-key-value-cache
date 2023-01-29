@@ -1,4 +1,4 @@
-import { Integer } from "@/util/CommonTypes";
+import { Integer, NullableNumber } from "@/util/CommonTypes";
 
 /**
  * A key-value cache with string as key and value of any type.
@@ -68,7 +68,7 @@ export abstract class IKeyValueCache<V> {
      * @param value 
      * @param ttl optional. If not given (undefined): will not expire. If given & is null: use this.defaultTTL 
      */
-    abstract put(key: string, value: V, ttl?: number): void;
+    abstract put(key: string, value: V, ttl?: NullableNumber): void;
 
     /**
      * Delete the item from cache with the given key if exists.

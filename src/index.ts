@@ -1,4 +1,4 @@
-export { Integer } from '@/util/CommonTypes';
+export { Integer, NullableNumber } from '@/util/CommonTypes';
 export { IKeyValueCache } from "@/cache"
 export { CacheFactory } from "@/CacheFactory"
 export { CacheOption, QueueConfig } from "@/config"
