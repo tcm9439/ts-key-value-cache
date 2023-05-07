@@ -4,12 +4,20 @@ import { IKeyValueCache } from "@/cache/IKeyValueCache";
 import { CachedValue } from "@/types/";
 import { ID, Integer, NullableNumber } from '@/util/CommonTypes';
 import { isPositiveInteger } from '../util/CommonConstrains';
+import { IMapStorage } from "./IMapStorage";
 
 export class KeyValueCacheMap<V> extends IKeyValueCache<V> {
-    private _store: Map<string, CachedValue<V>> = new Map();
+    //private _store: Map<string, CachedValue<V>> = new Map();
+    private _store: IMapStorage<V>
 
-    constructor(defaultTTL?: Integer, maxSize?: Integer, emitIndividualTimeout: boolean = false) {
+    constructor(defaultTTL?: Integer, maxSize?: Integer, emitIndividualTimeout: boolean = false, storage?: IMapStorage<V>) {
         super(defaultTTL, maxSize, emitIndividualTimeout);
+        if (storage){
+            // use provided storage object
+            this._store = storage;
+        } else {
+            this._store = new Map<string, CachedValue<V>>();
+        }
     }
 
     protected getStoredItem(key: string): CachedValue<V> | undefined {
