@@ -1,22 +1,25 @@
 import { IKeyValueCache, KeyValueCacheMap, KeyValueCacheHeap, KeyValueCacheQueues } from "@/cache/";
 import { CacheOption } from "@/config/CacheOption";
 import { CacheType, TimeoutMode } from "@/types";
-import { InvalidConfigException } from "./exception/InvalidConfigException";
+import { InvalidConfigException } from "@/exception/InvalidConfigException";
+import { IMapStorage } from "@/cache/IMapStorage";
+
 
 export class CacheFactory<T> {
-    public static make<T>(options: CacheOption): IKeyValueCache<T> {
+    public static make<T>(options: CacheOption, storage?: IMapStorage<T>): IKeyValueCache<T> {
         this.checkConfig(options);
         switch (options.cacheType) {
             case CacheType.MAP:
                 return new KeyValueCacheMap(
                     options.defaultTTL,
                     options.maxSize,
-                    options.timeoutMode === TimeoutMode.INDIVIDUAL_TIMEOUT
+                    options.timeoutMode === TimeoutMode.INDIVIDUAL_TIMEOUT,
+                    storage
                 );
             case CacheType.HEAP:
-                return new KeyValueCacheHeap(options.defaultTTL, options.maxSize);
+                return new KeyValueCacheHeap(options.defaultTTL, options.maxSize, storage);
             case CacheType.QUEUES:
-                return new KeyValueCacheQueues(options.queueConfigs);
+                return new KeyValueCacheQueues(options.queueConfigs, storage);
         }
     }
 

@@ -4,6 +4,7 @@ import { CacheItemIndex } from "@/types";
 import { Integer, Timestamp } from "@/util/CommonTypes";
 import { QueueConfig } from '@/config';
 import { Queue } from "@/util/Queue";
+import { IMapStorage } from "@/cache/IMapStorage";
 
 /**
  * Queue (FIFO) for the cache item index by expireTS
@@ -78,8 +79,8 @@ export class KeyValueCacheQueues<V> extends KeyValueCacheMap<V>{
     private _timeoutQueues: Map<Integer, TimeoutQueue> = new Map();
     private _availableTTL: Integer[] = []
 
-    constructor(queueConfigs: QueueConfig[] | undefined) {
-        super(undefined, undefined, false);
+    constructor(queueConfigs: QueueConfig[] | undefined, storage?: IMapStorage<V>) {
+        super(undefined, undefined, false, storage);
         if (queueConfigs === undefined || queueConfigs.length === 0){
             throw new InvalidConfigException("No queue config is supplied.")
         }

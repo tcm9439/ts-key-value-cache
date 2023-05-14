@@ -4,7 +4,7 @@ import { IKeyValueCache } from "@/cache/IKeyValueCache";
 import { CachedValue } from "@/types/";
 import { ID, Integer, NullableNumber } from '@/util/CommonTypes';
 import { isPositiveInteger } from '../util/CommonConstrains';
-import { IMapStorage } from "./IMapStorage";
+import { IMapStorage } from "@/cache/IMapStorage";
 
 export class KeyValueCacheMap<V> extends IKeyValueCache<V> {
     //private _store: Map<string, CachedValue<V>> = new Map();

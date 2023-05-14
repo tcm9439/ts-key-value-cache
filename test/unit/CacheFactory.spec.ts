@@ -3,6 +3,7 @@ import { CacheOption, QueueConfig } from '@/config';
 import { IKeyValueCache, KeyValueCacheMap, KeyValueCacheHeap } from '@/cache';
 import { CacheType, TimeoutMode } from "@/types";
 import { KeyValueCacheQueues } from '@/cache/KeyValueQueues';
+import { IMapStorage } from "@/cache/IMapStorage";
 
 describe("CacheFactory", () => {
     it("checkConfig", () => {
@@ -47,5 +48,11 @@ describe("CacheFactory", () => {
         options.queueConfigs = queueConfigs;
         cacheInstance = CacheFactory.make<string>(options);
         expect(cacheInstance).toBeInstanceOf(KeyValueCacheQueues)
+
+        // use external storage
+        let storage: IMapStorage<string> = new Map();
+        options = new CacheOption(CacheType.MAP);
+        cacheInstance = CacheFactory.make<string>(options, storage);
+        expect(cacheInstance).toBeInstanceOf(KeyValueCacheMap);
     })
 })

@@ -1,5 +1,5 @@
-export { Integer, NullableNumber } from '@/util/CommonTypes';
-export { IKeyValueCache } from "@/cache"
+export { Integer, NullableNumber, Timestamp } from '@/util/CommonTypes';
+export { IKeyValueCache, IMapStorage } from "@/cache"
 export { CacheFactory } from "@/CacheFactory"
 export { CacheOption, QueueConfig } from "@/config"
-export { CacheType, TimeoutMode } from "@/types"
+export { CacheType, CachedValue, TimeoutMode } from "@/types"

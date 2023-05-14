@@ -1,6 +1,7 @@
 import { KeyValueCacheMap } from "@/cache/KeyValueCacheMap";
 import { CacheItemIndex, orderByExpiredTSScoreFunction } from "@/types";
 import { Integer } from "@/util/CommonTypes";
+import { IMapStorage } from "@/cache/IMapStorage";
 import MinHeap from "min-heap";
 
 /**
@@ -22,8 +23,8 @@ export class KeyValueCacheHeap<V> extends KeyValueCacheMap<V>{
      */
     private _smallestExpiredTSItem: CacheItemIndex | null = null;
 
-    constructor(defaultTTL?: Integer, maxSize?: Integer) {
-        super(defaultTTL, maxSize, false);
+    constructor(defaultTTL?: Integer, maxSize?: Integer, storage?: IMapStorage<V>) {
+        super(defaultTTL, maxSize, false, storage);
     }
 
     /**

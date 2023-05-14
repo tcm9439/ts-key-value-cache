@@ -24,6 +24,10 @@ export abstract class IKeyValueCache<V> {
     protected emitIndividualTimeout: boolean = false;
 
     constructor(defaultTTL?: Integer, maxSize?: Integer, emitIndividualTimeout: boolean = false) {
+        if (defaultTTL === 0){ 
+            // won't timeout
+            defaultTTL = undefined;
+        }
         this.defaultTTL = defaultTTL;
         this.maxSize = maxSize;
         this.emitIndividualTimeout = emitIndividualTimeout;

@@ -4,6 +4,7 @@ import { CachedValue } from '@/types/CachedValue';
 /**
  * interface IMapStorage
  * abstract Map() object methods
+ * so that it support external storage
  */
 export interface IMapStorage<V> {
     get(key: string): CachedValue<V> | undefined;

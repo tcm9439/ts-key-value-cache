@@ -2,6 +2,7 @@ import { KeyValueCacheMap } from "@/cache";
 import { CachedValue } from "@/types";
 import { cacheContentEqual } from "@test/util/assert";
 import { MockCurrentTimeState, mockTimeByState } from "@test/util/mockTime";
+import { IMapStorage } from "@/cache/IMapStorage";
 
 describe("KeyValueCacheMap", () => {
     // never expired + no size limit
@@ -193,4 +194,31 @@ describe("Individual timeout", () => {
         ttlCache.clear();
         expect(clearTimeout).toHaveBeenCalledTimes(4);
     })
+});
+
+describe("Constructor with external storage", () => {
+    // never expired + no size limit
+    let baseCache: KeyValueCacheMap<string>;
+    let baseCacheExpected: Map<string, string>;
+
+    beforeEach(() => {
+        let storage: IMapStorage<string> = new Map();
+        baseCache = new KeyValueCacheMap<string>(undefined, undefined, false, storage);
+        baseCache.put("A", "aaa");
+        baseCache.put("B", "bbb");
+        baseCache.put("C", "1234");
+        baseCacheExpected = new Map<string, string>([
+            ["A", "aaa"],
+            ["B", "bbb"],
+            ["C", "1234"],
+        ]);
+    });
+
+    it("put & get", () => {
+        expect(cacheContentEqual(baseCache, baseCacheExpected)).toBeTruthy();
+        baseCache.put("A", "new aaa!");
+        baseCacheExpected.set("A", "new aaa!");
+        expect(cacheContentEqual(baseCache, baseCacheExpected)).toBeTruthy();
+        expect(baseCache.get("Not in cache")).toBeUndefined();
+    });
 });

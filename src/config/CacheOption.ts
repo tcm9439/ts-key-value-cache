@@ -61,10 +61,14 @@ export class CacheOption {
 	}
 
     public set defaultTTL(value: Integer){
-        if (!isPositiveInteger(value)){
+        if (!isPositiveInteger(value, true)){
             throw new InvalidConfigException("Default TTL must be undefined (don't need to call setter) or a positive integer.")
         }
-        this._defaultTTL = value;
+        if (value === 0){
+            this._defaultTTL = undefined;
+        } else {
+            this._defaultTTL = value;
+        }
     }
 
     // @ts-expect-error

@@ -16,7 +16,7 @@ npm i ts-key-value-cache
 TypeScript
 
 ```ts
-import { CacheFactory, CacheOption, QueueConfig, CacheType, TimeoutMode, IKeyValueCache } from "ts-key-value-cache";
+import { CacheFactory, CacheOption, QueueConfig, CacheType, TimeoutMode, IKeyValueCache, CachedValue, IMapStorage } from "ts-key-value-cache";
 
 let options: CacheOption = new CacheOption(CacheType.MAP);
 options.defaultTTL = 60 * 30; // 30 min
@@ -33,6 +33,10 @@ cache.put("Z", "123"); // will never expired unless it get push out due to cache
 
 cache.get("not exists"); // return undefined
 cache.get("abc"); // return "testing"
+
+// use external storage
+let storage: IMapStorage<string> = new Map();
+cacheInstance = CacheFactory.make<string>(options, storage);
 ```
 
 JavaScript (Just refer to Typescript examples for more)
@@ -82,7 +86,7 @@ Set up the `CacheOption` by the setter of its attributes (listed below).
 | Option      | Type                      | Default                   | Description |
 | :---------- | ------------------------- | ------------------------- | :---------- |
 | cacheType   | `CacheType`               | `CacheType.MAP`           | The implementation of `IKeyValueCache` to use. See [CacheType](#CacheType) for details. |
-| defaultTTL  | integer > 0               | `undefined`               | The ttl (in seconds) for a item pit with a null ttl. `undefined` means never timeout. |
+| defaultTTL  | integer > 0               | `undefined`               | The ttl (in seconds) for a item pit with a null ttl. `undefined` (or 0) means never timeout. |
 | maxSize     | integer > 0 or `undefined` | `undefined`               | The maximum number of key-value pairs the cache can hold. The exceed items are push out in a FIFO manner, regardless of its ttl and expired timestamp. If `undefined`, means there is no size limit. <br />If the cache is of `cacheType.Queues`, keep this attribute undefined (meaningless) and set the one in QueueConfig instead. |
 | timeoutMode | `TimeoutMode`             | `TimeoutMode.ON_GET_ONLY` | State when is the expired is removed. See [TimeoutMode](#TimeoutMode) for details. |
 | queueConfig | `QueueConfig[]`           | `undefined`               | Only used if using `cacheType.Queues`.<br />The config for each index queue. See [QueueConfig](#QueueConfig) for details. |
