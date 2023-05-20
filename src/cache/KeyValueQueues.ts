@@ -1,6 +1,6 @@
 import { KeyValueCacheMap } from "@/cache";
 import { InvalidConfigException } from "@/exception";
-import { CacheItemIndex } from "@/types";
+import { CacheItemIndex, CachedValue } from "@/types";
 import { Integer, Timestamp } from "@/util/CommonTypes";
 import { QueueConfig } from '@/config';
 import { Queue } from "@/util/Queue";
@@ -137,7 +137,7 @@ export class KeyValueCacheQueues<V> extends KeyValueCacheMap<V>{
             keysToDelete = keysToDelete.concat(queue.clearExpiredItems());
         }
         for (const key of keysToDelete){
-            if (this.getStoredItem(key)?.hasExpired()){
+            if (CachedValue.hasExpired(this.getStoredItem(key))){
                 // the key is really pointing to expired item
                 // instead of item that get replaced by a new value
                 this.delete(key);

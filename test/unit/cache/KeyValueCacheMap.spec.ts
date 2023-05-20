@@ -3,6 +3,7 @@ import { CachedValue } from "@/types";
 import { cacheContentEqual } from "@test/util/assert";
 import { MockCurrentTimeState, mockTimeByState } from "@test/util/mockTime";
 import { IMapStorage } from "@/cache/IMapStorage";
+import { MapStorageImpl } from "@/cache/MapStorageImpl";
 
 describe("KeyValueCacheMap", () => {
     // never expired + no size limit
@@ -202,7 +203,7 @@ describe("Constructor with external storage", () => {
     let baseCacheExpected: Map<string, string>;
 
     beforeEach(() => {
-        let storage: IMapStorage<string> = new Map();
+        let storage: IMapStorage<string> = new MapStorageImpl();
         baseCache = new KeyValueCacheMap<string>(undefined, undefined, false, storage);
         baseCache.put("A", "aaa");
         baseCache.put("B", "bbb");

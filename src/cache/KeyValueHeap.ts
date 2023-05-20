@@ -1,5 +1,5 @@
 import { KeyValueCacheMap } from "@/cache/KeyValueCacheMap";
-import { CacheItemIndex, orderByExpiredTSScoreFunction } from "@/types";
+import { CacheItemIndex, orderByExpiredTSScoreFunction, CachedValue } from "@/types";
 import { Integer } from "@/util/CommonTypes";
 import { IMapStorage } from "@/cache/IMapStorage";
 import MinHeap from "min-heap";
@@ -75,7 +75,7 @@ export class KeyValueCacheHeap<V> extends KeyValueCacheMap<V>{
         // pop out the item with the smallest expired ts & remove it
         // stop when the next one has not yet expired
         while (this._smallestExpiredTSItem != null && this._smallestExpiredTSItem.expiredTS < Date.now()){
-            if (this.getStoredItem(this._smallestExpiredTSItem.key)?.hasExpired()){
+            if (CachedValue.hasExpired(this.getStoredItem(this._smallestExpiredTSItem.key))){
                 // is still the same item
                 this.delete(this._smallestExpiredTSItem.key);
             }

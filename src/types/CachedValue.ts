@@ -1,13 +1,6 @@
 import { Integer, Timestamp, ID } from "@/util/CommonTypes";
 
 export class CachedValue<V> {
-    /**
-     * Next sequence number as unique ID for each CachedValue object.
-     */
-    private static nextItemID: ID = 1;
-
-    // private _itemID: ID;
-
     private _value: V;
 
     /**
@@ -20,10 +13,6 @@ export class CachedValue<V> {
      * The ID returned by the setTimeout if individualTimeout mode is on & this item has ttl
      */
     private _timeoutID?: NodeJS.Timeout;
-
-    // private static getID(): ID{
-    //     return this.nextItemID++;
-    // }
 
     constructor(value: V, ttl?: Integer, timeoutID?: NodeJS.Timeout) {
         // this._itemID = CachedValue.getID();
@@ -45,8 +34,11 @@ export class CachedValue<V> {
      * i.e. insertion time + ttl < Date.now
      * @returns true if already expired
      */
-    public hasExpired(): boolean {
-        if (this._expireTS != null && this._expireTS < Date.now()) {
+    public static hasExpired<V>(cachedValue: CachedValue<V> | undefined): boolean {
+        if (cachedValue == undefined) {
+            return true;
+        }
+        if (cachedValue?._expireTS != null && cachedValue?._expireTS < Date.now()) {
             return true;
         }
         return false;
@@ -63,16 +55,4 @@ export class CachedValue<V> {
 	public get timeoutID(): NodeJS.Timeout | undefined {
 		return this._timeoutID;
 	}
-
-    // public isTheSameItem(itemToCompare: CachedValue<V>): boolean {
-    //     return this._itemID === itemToCompare._itemID;
-    // }
-
-    // /**
-    //  * Getter itemID
-    //  * @return {ID}
-    //  */
-	// public get itemID(): ID {
-	// 	return this._itemID;
-	// }
 }

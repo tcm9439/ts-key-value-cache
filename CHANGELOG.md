@@ -1,3 +1,6 @@
+## 1.1.5
+- Support external storage.
+
 ## 1.1.4
 - Minify compiled /lib/
 - Fix type at IKeyValueCache

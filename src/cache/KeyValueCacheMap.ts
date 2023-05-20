@@ -2,12 +2,12 @@ import _ from "lodash";
 
 import { IKeyValueCache } from "@/cache/IKeyValueCache";
 import { CachedValue } from "@/types/";
-import { ID, Integer, NullableNumber } from '@/util/CommonTypes';
-import { isPositiveInteger } from '../util/CommonConstrains';
+import { Integer, NullableNumber } from '@/util/CommonTypes';
+import { isPositiveInteger } from '@/util/CommonConstrains';
 import { IMapStorage } from "@/cache/IMapStorage";
+import { MapStorageImpl } from "@/cache/MapStorageImpl";
 
 export class KeyValueCacheMap<V> extends IKeyValueCache<V> {
-    //private _store: Map<string, CachedValue<V>> = new Map();
     private _store: IMapStorage<V>
 
     constructor(defaultTTL?: Integer, maxSize?: Integer, emitIndividualTimeout: boolean = false, storage?: IMapStorage<V>) {
@@ -16,7 +16,7 @@ export class KeyValueCacheMap<V> extends IKeyValueCache<V> {
             // use provided storage object
             this._store = storage;
         } else {
-            this._store = new Map<string, CachedValue<V>>();
+            this._store = new MapStorageImpl<V>();
         }
     }
 
@@ -34,7 +34,7 @@ export class KeyValueCacheMap<V> extends IKeyValueCache<V> {
         let cacheValue: CachedValue<V> | undefined = this.getStoredItem(key);
         if (cacheValue) {
             // if in cache, check if expired
-            if (cacheValue.hasExpired()) {
+            if (CachedValue.hasExpired(cacheValue)) {
                 this.delete(key);
                 return undefined;
             } else {
@@ -45,7 +45,7 @@ export class KeyValueCacheMap<V> extends IKeyValueCache<V> {
     }
 
     protected hasExpired(key: string): boolean | undefined {
-        return this._store.get(key)?.hasExpired();
+        return CachedValue.hasExpired(this._store.get(key));
     }
 
     /**
@@ -86,17 +86,14 @@ export class KeyValueCacheMap<V> extends IKeyValueCache<V> {
 
         if (this.isFull()) {
             // remove overflow item
-            for (const key of this._store.keys()) {
-                this._store.delete(key);
-                break;
-            }
+            this._store.deleteFirst();
         }
     }
 
     delete(key: string): boolean {
         let item: CachedValue<V> | undefined = this.getStoredItem(key);
         if (this.emitIndividualTimeout && item && item.timeoutID != null){
-            clearTimeout(item.timeoutID);
+            clearTimeout(item?.timeoutID);
         }
         return this._store.delete(key);
     }
@@ -104,9 +101,9 @@ export class KeyValueCacheMap<V> extends IKeyValueCache<V> {
     clear(): void {
         if (this.emitIndividualTimeout){
             // clear all the timeout
-            for (const [key, item] of this._store){
+            for (const [key, item] of this._store.entries()){
                 if (item.timeoutID != null){
-                    clearTimeout(item.timeoutID);
+                    clearTimeout(item?.timeoutID);
                 }
             }
         }
@@ -114,7 +111,7 @@ export class KeyValueCacheMap<V> extends IKeyValueCache<V> {
     }
 
     size(): Integer {
-        return this._store.size;
+        return this._store.size();
     }
 
     /**
@@ -123,7 +120,7 @@ export class KeyValueCacheMap<V> extends IKeyValueCache<V> {
      */
     clearExpiredItems(): void {
         for (const [key, item] of this._store.entries()) {
-            if (item.hasExpired()){
+            if (CachedValue.hasExpired(item)){
                 this._store.delete(key);
             }
         }

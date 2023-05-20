@@ -15,10 +15,10 @@ describe("CacheValue", ()=>{
 
     it("hasExpired?", ()=>{
         MockCurrentTimeState.time = fakeNow + 25*1000;
-        expect(withExpireValue.hasExpired()).toBe(false)
+        expect(CachedValue.hasExpired(withExpireValue)).toBe(false)
         MockCurrentTimeState.time = fakeNow + 70*1000;
-        expect(withExpireValue.hasExpired()).toBe(true)
+        expect(CachedValue.hasExpired(withExpireValue)).toBe(true)
         MockCurrentTimeState.time = fakeNow + 1000*1000;
-        expect(noExpireValue.hasExpired()).toBe(false)
+        expect(CachedValue.hasExpired(noExpireValue)).toBe(false)
     })
 })

@@ -4,6 +4,7 @@ import { IKeyValueCache, KeyValueCacheMap, KeyValueCacheHeap } from '@/cache';
 import { CacheType, TimeoutMode } from "@/types";
 import { KeyValueCacheQueues } from '@/cache/KeyValueQueues';
 import { IMapStorage } from "@/cache/IMapStorage";
+import { MapStorageImpl } from "@/cache/MapStorageImpl";
 
 describe("CacheFactory", () => {
     it("checkConfig", () => {
@@ -50,7 +51,7 @@ describe("CacheFactory", () => {
         expect(cacheInstance).toBeInstanceOf(KeyValueCacheQueues)
 
         // use external storage
-        let storage: IMapStorage<string> = new Map();
+        let storage: IMapStorage<string> = new MapStorageImpl();
         options = new CacheOption(CacheType.MAP);
         cacheInstance = CacheFactory.make<string>(options, storage);
         expect(cacheInstance).toBeInstanceOf(KeyValueCacheMap);
