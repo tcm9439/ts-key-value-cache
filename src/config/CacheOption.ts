@@ -60,7 +60,10 @@ export class CacheOption {
 		return this._cacheType;
 	}
 
-    public set defaultTTL(value: Integer){
+    public set defaultTTL(value: Integer | undefined){
+        if (value === undefined){
+            return
+        }
         if (!isPositiveInteger(value, true)){
             throw new InvalidConfigException("Default TTL must be undefined (don't need to call setter) or a positive integer.")
         }
@@ -71,31 +74,34 @@ export class CacheOption {
         }
     }
 
-    // @ts-expect-error
     public get defaultTTL(): Integer | undefined {
         return this._defaultTTL;
     }
 
-    public set maxSize(value: Integer){
+    public set maxSize(value: Integer | undefined){
+        if (value === undefined){
+            return
+        }
         if (!isPositiveInteger(value)){
             throw new InvalidConfigException("Max size must be positive integer.")
         }
         this._maxSize = value;
     }
 
-    // @ts-expect-error
     public get maxSize(): Integer | undefined {
         return this._maxSize;
     }
 
-    public set queueConfigs(queueConfigs: QueueConfig[]){
+    public set queueConfigs(queueConfigs: QueueConfig[] | undefined){
+        if (queueConfigs === undefined){
+            return
+        }
         if (queueConfigs.length <= 0){
             throw new InvalidConfigException("You must have one or more queues.");
         }
         this._queueConfigs = queueConfigs;
     }
 
-    // @ts-expect-error
     public get queueConfigs(): QueueConfig[] | undefined {
         return this._queueConfigs
     }
