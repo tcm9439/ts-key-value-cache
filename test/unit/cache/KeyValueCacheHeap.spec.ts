@@ -1,10 +1,10 @@
 import { expect, describe, it } from "vitest";
 
 import { KeyValueCacheHeap } from "@/cache";
-import { cacheContentEqual } from "@test/util/assert";
-import { CacheItemIndex } from '@/types';
-import { Integer } from "@/util/CommonTypes";
-import { MockCurrentTimeState, mockTimeByState } from "@test/util/mockTime";
+import { cacheContentEqual } from "@test/util/assert.js";
+import { CacheItemIndex } from "@/types";
+import { Integer } from "@/util/CommonTypes.js";
+import { MockCurrentTimeState, mockTimeByState } from "@test/util/mockTime.js";
 
 /**
  * Check if the heap first item is as expected.

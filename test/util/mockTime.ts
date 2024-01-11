@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import { Integer, Timestamp } from "@/util/CommonTypes";
+import { Integer, Timestamp } from "@/util/CommonTypes.js";
 
 export function mockGetNow(timestamps: Timestamp[]): void {
     let mockedGetNow: any = vi.fn()

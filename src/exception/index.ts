@@ -1,1 +1,1 @@
-export * from "./InvalidConfigException"
+export * from "./InvalidConfigException.js"

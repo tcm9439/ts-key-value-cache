@@ -1,8 +1,8 @@
-import { IKeyValueCache, KeyValueCacheMap, KeyValueCacheHeap, KeyValueCacheQueues } from "@/cache/index";
-import { CacheOption } from "@/config/CacheOption";
-import { CacheType, TimeoutMode } from "@/types/index";
-import { InvalidConfigException } from "@/exception/InvalidConfigException";
-import { IMapStorage } from "@/cache/IMapStorage";
+import { IKeyValueCache, KeyValueCacheMap, KeyValueCacheHeap, KeyValueCacheQueues } from "@/cache/index.js";
+import { CacheOption } from "@/config/CacheOption.js";
+import { CacheType, TimeoutMode } from "@/types/index.js";
+import { InvalidConfigException } from "@/exception/InvalidConfigException.js";
+import { IMapStorage } from "@/cache/IMapStorage.js";
 
 
 export class CacheFactory<T> {

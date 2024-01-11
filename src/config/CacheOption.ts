@@ -1,8 +1,8 @@
-import { Integer } from "@/util/CommonTypes";
-import { CacheType, TimeoutMode } from "@/types/index";
-import { QueueConfig } from './QueueConfig';
-import { InvalidConfigException } from "@/exception/index";
-import { isPositiveInteger } from "@/util/CommonConstrains";
+import { Integer } from "@/util/CommonTypes.js";
+import { CacheType, TimeoutMode } from "@/types/index.js";
+import { QueueConfig } from "./QueueConfig.js";
+import { InvalidConfigException } from "@/exception/index.js";
+import { isPositiveInteger } from "@/util/CommonConstrains.js";
 
 export class CacheOption {
     /**

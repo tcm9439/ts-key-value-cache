@@ -1,4 +1,4 @@
-import { Integer, NullableNumber } from "@/util/CommonTypes";
+import { Integer, NullableNumber } from "@/util/CommonTypes.js";
 
 /**
  * A key-value cache with string as key and value of any type.

@@ -1,10 +1,10 @@
-import { KeyValueCacheMap } from "./KeyValueCacheMap";
-import { InvalidConfigException } from "@/exception/index";
-import { CacheItemIndex, CachedValue } from "@/types/index";
-import { Integer, Timestamp } from "@/util/CommonTypes";
-import { QueueConfig } from '@/config/index';
-import { Queue } from "@/util/Queue";
-import { IMapStorage } from "./IMapStorage";
+import { KeyValueCacheMap } from "./KeyValueCacheMap.js";
+import { InvalidConfigException } from "@/exception/index.js";
+import { CacheItemIndex, CachedValue } from "@/types/index.js";
+import { Integer, Timestamp } from "@/util/CommonTypes.js";
+import { QueueConfig } from "@/config/index.js";
+import { Queue } from "@/util/Queue.js";
+import { IMapStorage } from "./IMapStorage.js";
 
 /**
  * Queue (FIFO) for the cache item index by expireTS

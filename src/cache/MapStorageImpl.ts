@@ -1,5 +1,5 @@
-import { IMapStorage } from "./IMapStorage";
-import { CachedValue } from '@/types/CachedValue';
+import { IMapStorage } from "./IMapStorage.js";
+import { CachedValue } from "@/types/CachedValue.js";
 
 export class MapStorageImpl<V> implements IMapStorage<V> {
     private _store: Map<string, CachedValue<V>> = new Map();

@@ -1,6 +1,6 @@
 import { expect, describe, it, vi } from "vitest";
-import { MockCurrentTimeState, mockTimeByState } from '@test/util/mockTime';
-import { CachedValue } from '@/types/CachedValue';
+import { MockCurrentTimeState, mockTimeByState } from "@test/util/mockTime.js";
+import { CachedValue } from "@/types/CachedValue.js";
 
 describe("CacheValue", ()=>{
     let fakeNow = 1673519400;

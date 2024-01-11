@@ -1,4 +1,4 @@
-import { Integer } from '@/util/CommonTypes';
+import { Integer } from "@/util/CommonTypes.js";
 export class Queue<T> {
     private _store: T[] = [];
 

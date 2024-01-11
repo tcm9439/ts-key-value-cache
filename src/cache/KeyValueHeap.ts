@@ -1,7 +1,7 @@
-import { KeyValueCacheMap } from "./KeyValueCacheMap";
-import { CacheItemIndex, orderByExpiredTSScoreFunction, CachedValue } from "@/types/index";
-import { Integer } from "@/util/CommonTypes";
-import { IMapStorage } from "./IMapStorage";
+import { KeyValueCacheMap } from "./KeyValueCacheMap.js";
+import { CacheItemIndex, orderByExpiredTSScoreFunction, CachedValue } from "@/types/index.js";
+import { Integer } from "@/util/CommonTypes.js";
+import { IMapStorage } from "./IMapStorage.js";
 import MinHeap from "min-heap";
 
 /**

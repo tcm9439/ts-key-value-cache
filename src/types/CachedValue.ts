@@ -1,4 +1,4 @@
-import { Integer, Timestamp } from "@/util/CommonTypes";
+import { Integer, Timestamp } from "@/util/CommonTypes.js";
 
 export class CachedValue<V> {
     private _value: V;

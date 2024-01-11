@@ -1,6 +1,6 @@
-import { Integer } from "@/util/CommonTypes";
-import { InvalidConfigException } from "@/exception/index";
-import { isPositiveInteger } from "@/util/CommonConstrains";
+import { Integer } from "@/util/CommonTypes.js";
+import { InvalidConfigException } from "@/exception/index.js";
+import { isPositiveInteger } from "@/util/CommonConstrains.js";
 
 export class QueueConfig {
     private _size?: Integer;

@@ -2,10 +2,10 @@ import { expect, describe, it, vi, beforeEach } from "vitest";
 
 import { KeyValueCacheMap } from "@/cache";
 import { CachedValue } from "@/types";
-import { cacheContentEqual } from "@test/util/assert";
-import { MockCurrentTimeState, mockTimeByState } from "@test/util/mockTime";
-import { IMapStorage } from "@/cache/IMapStorage";
-import { MapStorageImpl } from "@/cache/MapStorageImpl";
+import { cacheContentEqual } from "@test/util/assert.js";
+import { MockCurrentTimeState, mockTimeByState } from "@test/util/mockTime.js";
+import { IMapStorage } from "@/cache/IMapStorage.js";
+import { MapStorageImpl } from "@/cache/MapStorageImpl.js";
 
 describe("KeyValueCacheMap", () => {
     // never expired + no size limit

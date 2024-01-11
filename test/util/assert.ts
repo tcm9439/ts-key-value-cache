@@ -1,4 +1,4 @@
-import { IKeyValueCache } from "@/cache/IKeyValueCache";
+import { IKeyValueCache } from "@/cache/IKeyValueCache.js";
 
 export function mapEqual(mapA: Map<any, any>, mapB: Map<any, any>): boolean {
     if (mapA.size !== mapB.size){

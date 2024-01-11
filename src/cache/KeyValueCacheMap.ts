@@ -1,9 +1,9 @@
-import { IKeyValueCache } from "./IKeyValueCache";
-import { CachedValue } from "@/types/index";
-import { Integer, NullableNumber } from '@/util/CommonTypes';
-import { isPositiveInteger } from '@/util/CommonConstrains';
-import { IMapStorage } from "./IMapStorage";
-import { MapStorageImpl } from "./MapStorageImpl";
+import { IKeyValueCache } from "./IKeyValueCache.js";
+import { CachedValue } from "@/types/index.js";
+import { Integer, NullableNumber } from "@/util/CommonTypes.js";
+import { isPositiveInteger } from "@/util/CommonConstrains.js";
+import { IMapStorage } from "./IMapStorage.js";
+import { MapStorageImpl } from "./MapStorageImpl.js";
 
 export class KeyValueCacheMap<V> extends IKeyValueCache<V> {
     private _store: IMapStorage<V>

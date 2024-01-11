@@ -1,11 +1,11 @@
 import { expect, describe, it, vi } from "vitest";
 import { KeyValueCacheQueues, TimeoutQueue } from "@/cache";
 import { QueueConfig } from "@/config";
-import { CacheItemIndex } from '@/types';
-import { Integer } from "@/util/CommonTypes";
-import { cacheContentEqual } from "@test/util/assert";
-import { MockCurrentTimeState, mockTimeByState } from "@test/util/mockTime";
-import { Queue } from "@/util/Queue";
+import { CacheItemIndex } from "@/types";
+import { Integer } from "@/util/CommonTypes.js";
+import { cacheContentEqual } from "@test/util/assert.js";
+import { MockCurrentTimeState, mockTimeByState } from "@test/util/mockTime.js";
+import { Queue } from "@/util/Queue.js";
 
 /**
  * Check if the index are as expected

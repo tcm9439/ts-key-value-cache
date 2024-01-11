@@ -1,12 +1,12 @@
 import { expect, describe, it } from "vitest";
 
-import { CacheFactory } from "@/CacheFactory";
-import { CacheOption, QueueConfig } from '@/config';
-import { IKeyValueCache, KeyValueCacheMap, KeyValueCacheHeap } from '@/cache';
+import { CacheFactory } from "@/CacheFactory.js";
+import { CacheOption, QueueConfig } from "@/config";
+import { IKeyValueCache, KeyValueCacheMap, KeyValueCacheHeap } from "@/cache";
 import { CacheType, TimeoutMode } from "@/types";
-import { KeyValueCacheQueues } from '@/cache/KeyValueQueues';
-import { IMapStorage } from "@/cache/IMapStorage";
-import { MapStorageImpl } from "@/cache/MapStorageImpl";
+import { KeyValueCacheQueues } from "@/cache/KeyValueQueues.js";
+import { IMapStorage } from "@/cache/IMapStorage.js";
+import { MapStorageImpl } from "@/cache/MapStorageImpl.js";
 
 describe("CacheFactory", () => {
     it("checkConfig", () => {

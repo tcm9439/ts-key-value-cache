@@ -1,4 +1,4 @@
-import { Timestamp } from '@/util/CommonTypes';
+import { Timestamp } from "@/util/CommonTypes.js";
 
 /**
  * Index to keep in the heap / queue.

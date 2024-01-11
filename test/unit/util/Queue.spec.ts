@@ -1,6 +1,6 @@
 import { expect, describe, it, beforeEach } from "vitest";
-import { Queue } from "@/util/Queue";
-import { arrayEqual } from '../../util/assert';
+import { Queue } from "@/util/Queue.js";
+import { arrayEqual } from "../../util/assert.js";
 
 describe("Queue", () => {
     let queue: Queue<string>;

@@ -1,5 +1,5 @@
-import { Integer } from "@/util/CommonTypes";
-import { CachedValue } from '@/types/CachedValue';
+import { Integer } from "@/util/CommonTypes.js";
+import { CachedValue } from "@/types/CachedValue.js";
 
 /**
  * Interface IMapStorage to abstract Map-like object methods
