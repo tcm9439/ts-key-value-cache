@@ -1,3 +1,5 @@
+import { expect, describe, it } from "vitest";
+
 import { CacheFactory } from "@/CacheFactory";
 import { CacheOption, QueueConfig } from '@/config';
 import { IKeyValueCache, KeyValueCacheMap, KeyValueCacheHeap } from '@/cache';

@@ -7,42 +7,42 @@
     ],
     "main": "./lib/index.js",
     "types": "./lib/api-index.d.js",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/tcm9439/ts-key-value-cache.git"
     },
     "scripts": {
-        "test": "jest",
+        "test": "vitest --run --globals --config ./vitest.config.js",
         "build": "tsc --project tsconfig-build.json && tsc-alias -p tsconfig-build.json",
         "build-types": "api-extractor run",
         "build-all": "npm run build && npm run build-types && npm run minify",
-        "test-c": "jest --coverage",
         "doc": "typedoc --skipErrorChecking --entryPointStrategy expand ./src --out ./doc --theme hierarchy",
         "minify": "minify-all-js ./lib"
     },
     "keywords": [
         "typescript",
         "cache",
-        "key value cache"
+        "key-value",
+        "in-memory",
+        "external storage"
     ],
     "author": "MaisyT",
-    "license": "UNLICENSED",
+    "license": "MIT",
     "dependencies": {
-        "lodash": "^4.17.21",
+        "lodash-es": "^4.17.21",
         "min-heap": "^0.2.3"
     },
     "devDependencies": {
         "@microsoft/api-extractor": "^7.33.7",
-        "@types/jest": "^29.2.5",
-        "@types/lodash": "^4.14.191",
-        "@types/node": "^18.11.18",
-        "jest": "^29.3.1",
+        "@types/lodash": "^4.14.202",
+        "@types/lodash-es": "^4.17.12",
         "minify-all-js": "^0.1.9",
-        "ts-jest": "^29.0.3",
         "ts-node": "^10.9.1",
         "tsc-alias": "^1.8.2",
         "typedoc": "^0.23.24",
         "typedoc-theme-hierarchy": "^3.0.2",
-        "typescript": "^4.9.4"
+        "typescript": "^4.9.4",
+        "vitest": "^1.1.3"
     }
 }

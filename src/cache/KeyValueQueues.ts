@@ -1,10 +1,10 @@
-import { KeyValueCacheMap } from "@/cache";
-import { InvalidConfigException } from "@/exception";
-import { CacheItemIndex, CachedValue } from "@/types";
+import { KeyValueCacheMap } from "./KeyValueCacheMap";
+import { InvalidConfigException } from "@/exception/index";
+import { CacheItemIndex, CachedValue } from "@/types/index";
 import { Integer, Timestamp } from "@/util/CommonTypes";
-import { QueueConfig } from '@/config';
+import { QueueConfig } from '@/config/index';
 import { Queue } from "@/util/Queue";
-import { IMapStorage } from "@/cache/IMapStorage";
+import { IMapStorage } from "./IMapStorage";
 
 /**
  * Queue (FIFO) for the cache item index by expireTS

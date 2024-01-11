@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { mockGetNow, MockCurrentTimeState, mockTimeByState } from './mockTime';
 
 describe("ts test util", () => {

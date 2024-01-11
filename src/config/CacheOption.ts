@@ -1,7 +1,7 @@
 import { Integer } from "@/util/CommonTypes";
-import { CacheType, TimeoutMode } from "@/types";
-import { QueueConfig } from '@/config/QueueConfig';
-import { InvalidConfigException } from "@/exception";
+import { CacheType, TimeoutMode } from "@/types/index";
+import { QueueConfig } from './QueueConfig';
+import { InvalidConfigException } from "@/exception/index";
 import { isPositiveInteger } from "@/util/CommonConstrains";
 
 export class CacheOption {

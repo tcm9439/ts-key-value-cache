@@ -1,4 +1,5 @@
-import { isPositiveInteger } from "@/util/CommonConstrains"
+import { expect, describe, it } from "vitest";
+import { isPositiveInteger } from "@/util/CommonConstrains";
 
 describe("CommonConstrain", () => {
     it("isPositiveInteger", () => {

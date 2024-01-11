@@ -1,3 +1,5 @@
+import { expect, describe, it, vi, beforeEach } from "vitest";
+
 import { KeyValueCacheMap } from "@/cache";
 import { CachedValue } from "@/types";
 import { cacheContentEqual } from "@test/util/assert";
@@ -148,7 +150,7 @@ describe("KeyValueCacheMap FIFO", () => {
 });
 
 describe("Individual timeout", () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     let fakeNow = 1673519400;
     let ttlCache: KeyValueCacheMap<string>;
     let ttlCacheExpected: Map<string, string>;
@@ -176,7 +178,7 @@ describe("Individual timeout", () => {
     it("Individual timeout", () => {
         // after 1.1 seconds, TC timeout
         MockCurrentTimeState.time = fakeNow+1100;
-        jest.advanceTimersByTime(1100);
+        vi.advanceTimersByTime(1100);
         ttlCacheExpected.delete("TC");
         expect(cacheContentEqual(ttlCache, ttlCacheExpected)).toBeTruthy();
         // replace an item when the last item with that key is not yet timeout
@@ -184,14 +186,14 @@ describe("Individual timeout", () => {
         
         // after 5 seconds, TB timeout, TE with new value should not be clear by the last timeout
         MockCurrentTimeState.time = fakeNow+5000;
-        jest.advanceTimersByTime(5000);
+        vi.advanceTimersByTime(5000);
         ttlCacheExpected.delete("TB");
         ttlCacheExpected.set("TE", "second");
         expect(cacheContentEqual(ttlCache, ttlCacheExpected)).toBeTruthy();
     });
 
     it("clear", () => {
-        jest.spyOn(global, 'clearTimeout');
+        vi.spyOn(global, 'clearTimeout');
         ttlCache.clear();
         expect(clearTimeout).toHaveBeenCalledTimes(4);
     })

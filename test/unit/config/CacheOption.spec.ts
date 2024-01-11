@@ -1,3 +1,4 @@
+import { expect, describe, it, vi, beforeEach } from "vitest";
 import { CacheOption, CacheType } from "@/index";
 import { QueueConfig } from "@/config";
 

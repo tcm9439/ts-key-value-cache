@@ -1,3 +1,4 @@
+import { expect, describe, it, vi } from "vitest";
 import MinHeap from "min-heap";
 
 import { CacheItemIndex, orderByExpiredTSScoreFunction } from "@/types";

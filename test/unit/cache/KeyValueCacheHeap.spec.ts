@@ -1,3 +1,5 @@
+import { expect, describe, it } from "vitest";
+
 import { KeyValueCacheHeap } from "@/cache";
 import { cacheContentEqual } from "@test/util/assert";
 import { CacheItemIndex } from '@/types';

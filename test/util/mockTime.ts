@@ -1,7 +1,8 @@
+import { vi } from "vitest";
 import { Integer, Timestamp } from "@/util/CommonTypes";
 
 export function mockGetNow(timestamps: Timestamp[]): void {
-    let mockedGetNow: jest.Mock<any, any> = jest.fn()
+    let mockedGetNow: any = vi.fn()
     for (const ts of timestamps){
         mockedGetNow.mockImplementationOnce(() => ts);
     }
@@ -21,7 +22,7 @@ export class MockCurrentTimeState {
 }
 
 export function mockTimeByState(){
-    let mockedGetNow: jest.Mock<any, any> = jest.fn()
+    let mockedGetNow = vi.fn()
     mockedGetNow.mockImplementation(() => MockCurrentTimeState.time);
     Date.now = mockedGetNow
 }

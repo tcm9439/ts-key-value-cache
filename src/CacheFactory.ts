@@ -1,6 +1,6 @@
-import { IKeyValueCache, KeyValueCacheMap, KeyValueCacheHeap, KeyValueCacheQueues } from "@/cache/";
+import { IKeyValueCache, KeyValueCacheMap, KeyValueCacheHeap, KeyValueCacheQueues } from "@/cache/index";
 import { CacheOption } from "@/config/CacheOption";
-import { CacheType, TimeoutMode } from "@/types";
+import { CacheType, TimeoutMode } from "@/types/index";
 import { InvalidConfigException } from "@/exception/InvalidConfigException";
 import { IMapStorage } from "@/cache/IMapStorage";
 

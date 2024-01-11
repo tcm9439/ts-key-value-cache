@@ -1,4 +1,4 @@
-import { IMapStorage } from "@/cache/IMapStorage";
+import { IMapStorage } from "./IMapStorage";
 import { CachedValue } from '@/types/CachedValue';
 
 export class MapStorageImpl<V> implements IMapStorage<V> {

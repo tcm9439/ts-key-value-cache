@@ -1,11 +1,9 @@
-import _ from "lodash";
-
-import { IKeyValueCache } from "@/cache/IKeyValueCache";
-import { CachedValue } from "@/types/";
+import { IKeyValueCache } from "./IKeyValueCache";
+import { CachedValue } from "@/types/index";
 import { Integer, NullableNumber } from '@/util/CommonTypes';
 import { isPositiveInteger } from '@/util/CommonConstrains';
-import { IMapStorage } from "@/cache/IMapStorage";
-import { MapStorageImpl } from "@/cache/MapStorageImpl";
+import { IMapStorage } from "./IMapStorage";
+import { MapStorageImpl } from "./MapStorageImpl";
 
 export class KeyValueCacheMap<V> extends IKeyValueCache<V> {
     private _store: IMapStorage<V>
@@ -70,7 +68,7 @@ export class KeyValueCacheMap<V> extends IKeyValueCache<V> {
         // create new item
         let newValue: CachedValue<V>;
         if (ttl && this.emitIndividualTimeout){
-            let timeoutID: NodeJS.Timeout = setTimeout(() => {
+            let timeoutID = setTimeout(() => {
                 this.removeTimeoutItem(key)
             }, ttl*1000);
             newValue = new CachedValue(value, ttl, timeoutID);

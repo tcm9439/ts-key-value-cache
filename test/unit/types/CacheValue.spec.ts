@@ -1,3 +1,4 @@
+import { expect, describe, it, vi } from "vitest";
 import { MockCurrentTimeState, mockTimeByState } from '@test/util/mockTime';
 import { CachedValue } from '@/types/CachedValue';
 

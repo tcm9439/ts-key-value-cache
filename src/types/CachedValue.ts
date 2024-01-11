@@ -1,4 +1,4 @@
-import { Integer, Timestamp, ID } from "@/util/CommonTypes";
+import { Integer, Timestamp } from "@/util/CommonTypes";
 
 export class CachedValue<V> {
     private _value: V;
@@ -12,9 +12,9 @@ export class CachedValue<V> {
     /**
      * The ID returned by the setTimeout if individualTimeout mode is on & this item has ttl
      */
-    private _timeoutID?: NodeJS.Timeout;
+    private _timeoutID?;
 
-    constructor(value: V, ttl?: Integer, timeoutID?: NodeJS.Timeout) {
+    constructor(value: V, ttl?: Integer, timeoutID?: any) {
         // this._itemID = CachedValue.getID();
         this._value = value;
         this._expireTS = ttl != undefined ? Date.now() + ttl*1000 : undefined;
@@ -52,7 +52,7 @@ export class CachedValue<V> {
      * Getter timeoutID
      * @return {NodeJS.Timeout}
      */
-	public get timeoutID(): NodeJS.Timeout | undefined {
+	public get timeoutID(): any | undefined {
 		return this._timeoutID;
 	}
 }

@@ -1,3 +1,4 @@
+import { expect, describe, it, vi } from "vitest";
 import { KeyValueCacheQueues, TimeoutQueue } from "@/cache";
 import { QueueConfig } from "@/config";
 import { CacheItemIndex } from '@/types';

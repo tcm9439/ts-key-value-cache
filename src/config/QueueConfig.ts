@@ -1,5 +1,5 @@
 import { Integer } from "@/util/CommonTypes";
-import { InvalidConfigException } from "@/exception";
+import { InvalidConfigException } from "@/exception/index";
 import { isPositiveInteger } from "@/util/CommonConstrains";
 
 export class QueueConfig {

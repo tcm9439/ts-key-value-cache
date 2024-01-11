@@ -1,3 +1,4 @@
+import { expect, describe, it, vi } from "vitest";
 import { QueueConfig } from "@/config";
 
 describe("QueueConfig", () => {
