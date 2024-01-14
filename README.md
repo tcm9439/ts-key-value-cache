@@ -1,11 +1,11 @@
 # Typescript Local Key Value Cache
 
-A local key-value cache with string as key and value of any type which support
+A key-value cache with string as key and value of any type which support
 
 - time-to-live management
 - size control which remove exceed key-value pair in a FIFO manner
 - housekeep function to clear the expired item in cache with O(k) times, where k is the number of expired items (Not applied to MAP implementation. For details, see [config](#config).)
-- external storage (e.g. localStorage, Redis) that is provided for storing the key-value pair.
+- in-memory or external storage (e.g. localStorage, Redis) for storing the key-value pair.
 
 ## Installation
 ```
@@ -36,22 +36,8 @@ cache.get("not exists"); // return undefined
 cache.get("abc"); // return "testing"
 
 // use external storage
-let storage: IMapStorage<string> = new SomeMapStorageImplementation();
-cacheInstance = CacheFactory.make<string>(options, storage);
-```
-
-JavaScript (Just refer to Typescript examples for more)
-
-```js
-import { CacheFactory, CacheOption, QueueConfig, CacheType, TimeoutMode, IKeyValueCache } from "ts-key-value-cache";
-
-let options = new CacheOption(CacheType.MAP);
-let cache = CacheFactory.make(options);
-
-cache.put("abc", "testing");
-
-cache.get("not exists"); // return undefined
-cache.get("abc"); // return "testing"
+class SomeMapStorageImplementation implements IMapStorage<string> {...}
+cacheInstance = CacheFactory.make<string>(options, new SomeMapStorageImplementation());
 ```
 
 ## Operations on IKeyValueCache

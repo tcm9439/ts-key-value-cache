@@ -1,3 +1,8 @@
+## 1.2.0
+- Update to ES Module
+- Change lodash to lodash-es
+- Change test framework
+
 ## 1.1.5
 - Support external storage.
 
