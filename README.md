@@ -4,8 +4,16 @@ A key-value cache with string as key and value of any type which support
 
 - time-to-live management
 - size control which remove exceed key-value pair in a FIFO manner
-- housekeep function to clear the expired item in cache with O(k) times, where k is the number of expired items (Not applied to MAP implementation. For details, see [config](#config).)
+- housekeep function to clear the expired item in cache with O(k log N) times, where k is the number of expired items.
 - in-memory or external storage (e.g. localStorage, Redis) for storing the key-value pair.
+
+## A cache with HEAP index
+- Use a min-heap for faster expired item management. 
+- Support arbitrary ttl.
+- Complicity
+  - get, delete, clear, size: O(1)
+  - put: O(log N) for index insertion
+  - clearExpiredItems: O(k log N), where k is the number of expired items
 
 ## Installation
 ```
@@ -17,9 +25,9 @@ npm i ts-key-value-cache
 TypeScript
 
 ```ts
-import { CacheFactory, CacheOption, QueueConfig, CacheType, TimeoutMode, IKeyValueCache, CachedValue, IMapStorage } from "ts-key-value-cache";
+import { CacheFactory, CacheOption, TimeoutMode, IKeyValueCache, CachedValue, IMapStorage } from "ts-key-value-cache";
 
-let options: CacheOption = new CacheOption(CacheType.MAP);
+let options: CacheOption = new CacheOption();
 options.defaultTTL = 60 * 30; // 30 min
 options.maxSize = 100; // this cache keep 100 key-value pair at most
 
@@ -72,54 +80,8 @@ Set up the `CacheOption` by the setter of its attributes (listed below).
 
 | Option      | Type                      | Default                   | Description |
 | :---------- | ------------------------- | ------------------------- | :---------- |
-| cacheType   | `CacheType`               | `CacheType.MAP`           | The implementation of `IKeyValueCache` to use. See [CacheType](#CacheType) for details. |
 | defaultTTL  | integer > 0               | `undefined`               | The ttl (in seconds) for a item pit with a null ttl. `undefined` (or 0) means never timeout. |
 | maxSize     | integer > 0 or `undefined` | `undefined`               | The maximum number of key-value pairs the cache can hold. The exceed items are push out in a FIFO manner, regardless of its ttl and expired timestamp. If `undefined`, means there is no size limit. <br />If the cache is of `cacheType.Queues`, keep this attribute undefined (meaningless) and set the one in QueueConfig instead. |
-| timeoutMode | `TimeoutMode`             | `TimeoutMode.ON_GET_ONLY` | State when is the expired is removed. See [TimeoutMode](#TimeoutMode) for details. |
-| queueConfig | `QueueConfig[]`           | `undefined`               | Only used if using `cacheType.Queues`.<br />The config for each index queue. See [QueueConfig](#QueueConfig) for details. |
-
-### CacheType
-
-#### MAP
-- Simple JS Map that provide the basic cache without index for expiredTS (timestamp).
-- Support arbitrary ttl.
-- Complicity
-  - get, put, delete, clear, size: O(1)
-  - clearExpiredItems: O(N)
-
-#### HEAP
-- An extension of MAP which use a min-heap for faster expired item management. 
-- Support arbitrary ttl.
-- Complicity
-  - get, put, delete, clear, size: O(1)
-  - put: O(log N) for index insertion
-  - clearExpiredItems: O(k log N), where k is the number of expired items
-
-> If only a few cache item will time out, consider to use MAP instead.
-#### QUEUES
-- An extension of MAP which use multiple FIFO queues for expired item management. Each with a fixed ttl.
-- Can have a queue with items that won't expired.
-- Complicity
-  - get, put, delete, clear, size: O(1)
-  - clearExpiredItems: O(k), where k is the number of expired items
-
-> If there are many possible ttl values, consider to use MAP instead.
-
-> If there is only one queue, consider to use MAP or HEAP instead.
-
-### TimeoutMode
-
-| Mode               | Description |
-| ------------------ | :---------- |
-| ON_GET_ONLY        | When get(key) is called, check if the cache item found is expired. |
-| INDIVIDUAL_TIMEOUT | - Apart from the checking on get(), each item has its own timeout function emits so that the cache is always at its minium required size.<br />- Should only used if there are only a few items. <br />- Only applicable to MAP type as I believe calling clearExpiredItems() is more effective for the other type. |
-
-### QueueConfig
-
-| Option | Type                      | Default | Description |
-| :----- | ------------------------- | ------- | :---------- |
-| ttl    | integer > 0 or `undefined` | `undefined` | Default ttl (in seconds) of key-value pair if null ttl is supply when put(). `undefined` for item that won't timeout. |
-| size   | integer > 0 or `undefined` | `undefined` | The maximum size of this queue, `undefined` means no limit. |
 
 ## Documentation
 Download the module from [git](https://github.com/tcm9439/ts-key-value-cache) and run `npm run doc` to get a full version of doc.
