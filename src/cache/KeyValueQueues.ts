@@ -1,35 +1,37 @@
-import { KeyValueCacheMap } from "./KeyValueCacheMap.js";
-import { InvalidConfigException } from "@/exception/index.js";
-import { CacheItemIndex, CachedValue } from "@/types/index.js";
-import { Integer, Timestamp } from "@/util/CommonTypes.js";
-import { QueueConfig } from "@/config/index.js";
-import { Queue } from "@/util/Queue.js";
-import { IMapStorage } from "./IMapStorage.js";
+import { KeyValueCacheMap } from "./KeyValueCacheMap.js"
+import { InvalidConfigException } from "@/exception/index.js"
+import { CacheItemIndex, CachedValue } from "@/types/index.js"
+import { Integer, Timestamp } from "@/util/CommonTypes.js"
+import { QueueConfig } from "@/config/index.js"
+import { Queue } from "@/util/Queue.js"
+import { IMapStorage } from "./IMapStorage.js"
 
 /**
  * Queue (FIFO) for the cache item index by expireTS
- * 
- * delete(key) won't remove the index as it require a O(N) operation to search for the index with the given key. It only got remove when clearExpiredItems() is called.
+ *
+ * !!! Important !!!
+ * delete(key) won't remove the index as it require a O(N) operation to search for the index with the given key.
+ * The index (of deleted item) only got remove when clearExpiredItems() is called.
  */
 export class TimeoutQueue {
     /**
      * Queue for the cache item index by expireTS
      * https://github.com/datastructures-js/queue
      */
-    private _queue: Queue<CacheItemIndex> = new Queue();
-    
+    private _queue: Queue<CacheItemIndex> = new Queue()
+
     /**
      * Max capacity of this queue.
      * If undefined, means no limit.
      */
-    private _maxSize?: Integer;
+    private _maxSize?: Integer
 
-    constructor(maxSize?: Integer){
-        this._maxSize = maxSize;
+    constructor(maxSize?: Integer) {
+        this._maxSize = maxSize
     }
 
     clear(): void {
-        this._queue.clear();
+        this._queue.clear()
     }
 
     /**
@@ -37,21 +39,21 @@ export class TimeoutQueue {
      * @returns a list of item key to delete from cache store as it is expired (need to check if the idem it represent is really expired as there may be new value put to the store using the same key)
      */
     clearExpiredItems(): string[] {
-        let now: number = Date.now();
+        let now: number = Date.now()
         let keysToDelete: string[] = []
-        let item: CacheItemIndex | undefined = this._queue.peek(); // doesn't remove
-        while (item != undefined){
-            if (item.expiredTS <= now){
-                item = this._queue.dequeue(); // remove it
-                if (item != undefined){
-                    keysToDelete.push(item.key);
+        let item: CacheItemIndex | undefined = this._queue.peek() // doesn't remove
+        while (item != undefined) {
+            if (item.expiredTS <= now) {
+                item = this._queue.dequeue() // remove it
+                if (item != undefined) {
+                    keysToDelete.push(item.key)
                 }
-                item = this._queue.peek();
+                item = this._queue.peek()
             } else {
-                break;
+                break
             }
         }
-        return keysToDelete;
+        return keysToDelete
     }
 
     /**
@@ -59,64 +61,104 @@ export class TimeoutQueue {
      * @returns the overflow key to remove from store
      */
     push(index: CacheItemIndex): string | undefined {
-        if (this._maxSize && this._queue.size() >= this._maxSize){
-            return this._queue.dequeue()?.key;
+        if (this._maxSize && this._queue.size() >= this._maxSize) {
+            return this._queue.dequeue()?.key
         }
-        this._queue.enqueue(index);
-        return undefined;
+        this._queue.enqueue(index)
+        return undefined
+    }
+
+    peek(): CacheItemIndex | undefined {
+        return this._queue.peek()
+    }
+
+    size(): number {
+        return this._queue.size()
+    }
+
+    rebuildIndex<V>(
+        getItemFunction: (key: string) => CachedValue<V> | undefined,
+        deleteItemFunction: (key: string) => void
+    ): void {
+        let newQueue: Queue<CacheItemIndex> = new Queue()
+        let index: CacheItemIndex | undefined = this._queue.dequeue()
+        while (index != undefined) {
+            let cachedValue: CachedValue<V> | undefined = getItemFunction(index.key)
+            if (cachedValue != undefined) {
+                if (CachedValue.hasExpired(cachedValue)) {
+                    // the item has expired, don't put it back
+                    deleteItemFunction(index.key)
+                } else if (index.expiredTS === cachedValue.expireTS) {
+                    // the index is still for the same item
+                    newQueue.enqueue(index)
+                }
+            }
+            index = this._queue.dequeue()
+        }
+        this._queue = newQueue
     }
 }
 
 /**
  * A extant of MAP which use multiple FIFO queues to store indexes of item's expireTS
- * to achieve faster expired item management. 
+ * to achieve faster expired item management.
  * Each queue with a fixed ttl.
  * Can add item that won't expired.
- * 
+ *
+ * !!! Important !!!
  * delete(key) won't remove the index as it require a O(N) operation to search in heap.
+ * The index (of deleted item) only got remove when clearExpiredItems() / deleteFirstExpiredItem() / rebuildIndex() is called.
  */
-export class KeyValueCacheQueues<V> extends KeyValueCacheMap<V>{
-    private _timeoutQueues: Map<Integer, TimeoutQueue> = new Map();
+export class KeyValueCacheQueues<V> extends KeyValueCacheMap<V> {
+    private _timeoutQueues: Map<Integer, TimeoutQueue> = new Map()
     private _availableTTL: Integer[] = []
 
     constructor(queueConfigs: QueueConfig[] | undefined, storage?: IMapStorage<V>) {
-        super(undefined, undefined, false, storage);
-        if (queueConfigs === undefined || queueConfigs.length === 0){
+        super(undefined, undefined, false, storage)
+        if (queueConfigs === undefined || queueConfigs.length === 0) {
             throw new InvalidConfigException("No queue config is supplied.")
         }
-        for (const config of queueConfigs){
-            if (this._availableTTL.includes(config.ttl)){
+        for (const config of queueConfigs) {
+            if (this._availableTTL.includes(config.ttl)) {
                 throw new InvalidConfigException("Require unique ttl for each queue.")
             }
-            this._availableTTL.push(config.ttl);
+            this._availableTTL.push(config.ttl)
             this._timeoutQueues.set(config.ttl, new TimeoutQueue(config.size))
         }
     }
 
     /**
      * See IKeyValueCache
-     * @param key 
-     * @param value 
+     * @param key
+     * @param value
      * @param ttl Under this mode, ttl must be undefined (no TTL) or included in queueConfig
      */
     put(key: string, value: V, ttl?: number): void {
-        if (ttl && !this._availableTTL.includes(ttl)){
-            throw new InvalidConfigException("Invalid ttl.");
+        if (ttl && !this._availableTTL.includes(ttl)) {
+            throw new InvalidConfigException("Invalid ttl.")
         }
 
-        super.put(key, value, ttl);
-        
+        super.put(key, value, ttl)
+
         // put the index
-        let expireTS: Timestamp | undefined = this.getStoredItem(key)?.expireTS;
-        let keyToDelete: string | undefined;
-        if (ttl && expireTS){
-            keyToDelete = this._timeoutQueues.get(ttl)?.push(new CacheItemIndex(key, expireTS));
-        } else if (ttl === undefined){
-            keyToDelete = this._timeoutQueues.get(0)?.push(new CacheItemIndex(key, Number.MAX_VALUE));
+        let expireTS: Timestamp | undefined = this.getStoredItem(key)?.expireTS
+        let keyToDelete: string | undefined
+        if (ttl && expireTS) {
+            keyToDelete = this._timeoutQueues.get(ttl)?.push(new CacheItemIndex(key, expireTS))
+        } else if (ttl === undefined) {
+            keyToDelete = this._timeoutQueues.get(0)?.push(new CacheItemIndex(key, Number.MAX_VALUE))
         }
-        if (keyToDelete !== undefined){
-            this.delete(keyToDelete);
+        if (keyToDelete !== undefined) {
+            this.delete(keyToDelete)
         }
+    }
+
+    indexSize(): Integer {
+        let size: number = 0
+        for (let queue of this._timeoutQueues.values()) {
+            size += queue.size()
+        }
+        return size
     }
 
     /**
@@ -125,23 +167,46 @@ export class KeyValueCacheQueues<V> extends KeyValueCacheMap<V>{
      */
     clear(): void {
         super.clear()
-        for (let queue of this._timeoutQueues.values()){
-            queue.clear();
+        for (let queue of this._timeoutQueues.values()) {
+            queue.clear()
         }
     }
 
     clearExpiredItems(): void {
         let keysToDelete: string[] = []
-        let count = 1;
-        for (let queue of this._timeoutQueues.values()){
-            keysToDelete = keysToDelete.concat(queue.clearExpiredItems());
+        for (let queue of this._timeoutQueues.values()) {
+            keysToDelete = keysToDelete.concat(queue.clearExpiredItems())
         }
-        for (const key of keysToDelete){
-            if (CachedValue.hasExpired(this.getStoredItem(key))){
+        for (const key of keysToDelete) {
+            if (CachedValue.hasExpired(this.getStoredItem(key))) {
                 // the key is really pointing to expired item
                 // instead of item that get replaced by a new value
-                this.delete(key);
+                this.delete(key)
             } // else this index refer to a item get replaced => ignore
+        }
+    }
+
+    deleteFirstExpiredItem(): void {
+        // check the first expired item in each queue
+        // and delete the one that expired first
+        let minTS: Timestamp = Number.MAX_VALUE
+        let keyToDelete: string | undefined
+        for (let queue of this._timeoutQueues.values()) {
+            let item: CacheItemIndex | undefined = queue.peek()
+            if (item && item.expiredTS < minTS) {
+                minTS = item.expiredTS
+                keyToDelete = item.key
+            }
+        }
+
+        if (keyToDelete) {
+            this.delete(keyToDelete)
+        }
+    }
+
+    rebuildIndex(): void {
+        for (let queue of this._timeoutQueues.values()) {
+            queue.rebuildIndex(this.getStoredItem.bind(this), this.delete.bind(this))
         }
     }
 }

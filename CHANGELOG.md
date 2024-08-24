@@ -1,3 +1,8 @@
+## 1.3.0
+- Refactor the logic related the deleteFirst() in MapStorage
+  - as the original method is not necessarily removing the first expired item
+- Better index size management
+
 ## 1.2.0
 - Update to ES Module
 - Change lodash to lodash-es
