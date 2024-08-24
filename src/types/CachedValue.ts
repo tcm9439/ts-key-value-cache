@@ -1,24 +1,20 @@
-import { Integer, Timestamp } from "@/util/CommonTypes.js";
+import { Integer, Timestamp } from "@/util/CommonTypes.js"
 
 export class CachedValue<V> {
-    private _value: V;
+    private _value: V
 
     /**
      * Unix timestamp. After this time, this cache is expired.
      * If undefine, never timeout
      */
-    private _expireTS?: Timestamp;
+    private _expireTS?: Timestamp
 
-    /**
-     * The ID returned by the setTimeout if individualTimeout mode is on & this item has ttl
-     */
-    private _timeoutID?;
+    private _insertTS: Timestamp
 
-    constructor(value: V, ttl?: Integer, timeoutID?: any) {
-        // this._itemID = CachedValue.getID();
-        this._value = value;
-        this._expireTS = ttl != undefined ? Date.now() + ttl*1000 : undefined;
-        this._timeoutID = timeoutID;
+    constructor(value: V, ttl?: Integer) {
+        this._value = value
+        this._expireTS = ttl != undefined ? Date.now() + ttl * 1000 : undefined
+        this._insertTS = Date.now()
     }
 
     /**
@@ -26,7 +22,7 @@ export class CachedValue<V> {
      * @return {V}
      */
     public get value(): V {
-        return this._value;
+        return this._value
     }
 
     /**
@@ -36,23 +32,19 @@ export class CachedValue<V> {
      */
     public static hasExpired<V>(cachedValue: CachedValue<V> | undefined): boolean {
         if (cachedValue == undefined) {
-            return true;
+            return true
         }
         if (cachedValue?._expireTS != null && cachedValue?._expireTS < Date.now()) {
-            return true;
+            return true
         }
-        return false;
+        return false
     }
 
     public get expireTS(): Timestamp | undefined {
-        return this._expireTS;
+        return this._expireTS
     }
 
-    /**
-     * Getter timeoutID
-     * @return {NodeJS.Timeout}
-     */
-	public get timeoutID(): any | undefined {
-		return this._timeoutID;
-	}
+    public get insertTS(): Timestamp {
+        return this._insertTS
+    }
 }

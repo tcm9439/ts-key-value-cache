@@ -18,19 +18,13 @@ export abstract class IKeyValueCache<V> {
      */
     protected maxSize?: Integer
 
-    /**
-     * Whether to emit one timeout for each
-     */
-    protected emitIndividualTimeout: boolean = false
-
-    constructor(defaultTTL?: Integer, maxSize?: Integer, emitIndividualTimeout: boolean = false) {
+    constructor(defaultTTL?: Integer, maxSize?: Integer) {
         if (defaultTTL === 0) {
             // won't timeout
             defaultTTL = undefined
         }
         this.defaultTTL = defaultTTL
         this.maxSize = maxSize
-        this.emitIndividualTimeout = emitIndividualTimeout
     }
 
     /**
@@ -72,7 +66,7 @@ export abstract class IKeyValueCache<V> {
      * & the expiredTS will be renew by the new ttl.
      * @param key
      * @param value
-     * @param ttl optional. If not given (undefined): will not expire. If given & is null: use this.defaultTTL
+     * @param ttl optional. Unit: second. If not given (undefined): will not expire. If given & is null: use this.defaultTTL
      */
     abstract put(key: string, value: V, ttl?: NullableNumber): void
 
@@ -105,10 +99,11 @@ export abstract class IKeyValueCache<V> {
     abstract deleteFirstExpiredItem(): void
 
     /**
-     * Return the number of item in the cache index.
-     * This is not the same as the size() method as it only return the number of item in the index.
+     * Check if the index is too big.
+     * If the index is too big, the cache should be rebuild.
+     * @returns true if the index is too big
      */
-    abstract indexSize(): Integer
+    abstract isIndexTooBig(): boolean
 
     /**
      * Rebuild the index of the cache.
