@@ -1,3 +1,5 @@
 export * from "./IKeyValueCache.js"
-export * from "./KeyValueHeap.js"
+export * from "./KeyValueCacheMap.js"
 export * from "./IMapStorage.js"
+export * from "./MapStorageImpl.js"
+export * from "./CacheItemIndex.js"

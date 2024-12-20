@@ -29,10 +29,7 @@
     ],
     "author": "MaisyT",
     "license": "MIT",
-    "dependencies": {
-        "lodash-es": "^4.17.21",
-        "min-heap": "^0.2.3"
-    },
+    "dependencies": {},
     "devDependencies": {
         "@microsoft/api-extractor": "^7.33.7",
         "@types/lodash": "^4.14.202",

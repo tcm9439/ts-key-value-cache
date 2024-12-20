@@ -1,53 +1,50 @@
 import { Integer } from "@/util/CommonTypes.js"
-import { InvalidConfigException } from "@/exception/index.js"
 import { isPositiveInteger } from "@/util/CommonConstrains.js"
+import { Duration } from "@/util/Duration"
+import { IKeyValueCache, IMapStorage, KeyValueCacheMap } from "@/cache"
+import { MapStorageImpl } from "@/cache/MapStorageImpl"
 
-export class CacheOption {
+export class CacheOption<V> {
+    static readonly DEFAULT_MAX_SIZE = 100
+
     /**
      * Default ttl (seconds) of key-value pair if null ttl is supply when put()
-     * If undefined, never timeout
+     * If null, the item default never timeout
      */
-    private _defaultTTL?: Integer
+    private _defaultTTL: Duration | null = null
 
     /**
      * Max num of key-value pair to store.
-     * If undefined, no limit
      */
-    private _maxSize?: Integer
+    private _maxSize: Integer = CacheOption.DEFAULT_MAX_SIZE
+
+    /**
+     * The map to store key-value pair
+     */
+    private _store: IMapStorage<V> = new MapStorageImpl<V>()
 
     constructor() {}
 
-    public set defaultTTL(value: Integer | undefined) {
-        if (value === undefined) {
-            return
-        }
-        if (!isPositiveInteger(value, true)) {
-            throw new InvalidConfigException(
-                "Default TTL must be undefined (don't need to call setter) or a positive integer."
-            )
-        }
-        if (value === 0) {
-            this._defaultTTL = undefined
+    public setDefaultTTL(value?: Duration): void {
+        if (value == null || value.inMicroseconds <= 0) {
+            this._defaultTTL = null
         } else {
             this._defaultTTL = value
         }
     }
 
-    public get defaultTTL(): Integer | undefined {
-        return this._defaultTTL
-    }
-
-    public set maxSize(value: Integer | undefined) {
-        if (value === undefined) {
-            return
-        }
+    public setMaxSize(value: Integer) {
         if (!isPositiveInteger(value)) {
-            throw new InvalidConfigException("Max size must be positive integer.")
+            throw new Error("Max size must be positive integer.")
         }
         this._maxSize = value
     }
 
-    public get maxSize(): Integer | undefined {
-        return this._maxSize
+    public setStore(value: IMapStorage<V>) {
+        this._store = value
+    }
+
+    create(): IKeyValueCache<V> {
+        return new KeyValueCacheMap<V>(this._store, this._maxSize, this._defaultTTL || undefined)
     }
 }

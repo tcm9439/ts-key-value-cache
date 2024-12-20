@@ -1,32 +1,20 @@
-import { vi } from "vitest";
-import { Integer, Timestamp } from "@/util/CommonTypes.js";
+import { vi } from "vitest"
+import { Timestamp } from "@/util/CommonTypes.js"
 
-export function mockGetNow(timestamps: Timestamp[]): void {
-    let mockedGetNow: any = vi.fn()
-    for (const ts of timestamps){
-        mockedGetNow.mockImplementationOnce(() => ts);
+export class MockCurrentTime {
+    public static time: Timestamp
+
+    public static setTime(time: Timestamp) {
+        MockCurrentTime.time = time
     }
-    Date.now = mockedGetNow
-}
 
-export function mockGetNowWithTimes(firstTS: Timestamp, secondsAfterFirst: Integer[]) {
-    let timestamps: Timestamp[] = [firstTS];
-    for (const after of secondsAfterFirst) {
-        timestamps.push(firstTS + after * 1000);
+    public static setTimeByDate(time: Date) {
+        MockCurrentTime.time = time.getTime()
     }
-    mockGetNow(timestamps);
-}
 
-export class MockCurrentTimeState {
-    public static time: Timestamp;
-}
-
-export function mockTimeByState(){
-    let mockedGetNow = vi.fn()
-    mockedGetNow.mockImplementation(() => MockCurrentTimeState.time);
-    Date.now = mockedGetNow
-}
-
-export async function sleep(ms: Integer) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    public static startMocking() {
+        let mockedGetNow = vi.fn()
+        mockedGetNow.mockImplementation(() => MockCurrentTime.time)
+        Date.now = mockedGetNow
+    }
 }

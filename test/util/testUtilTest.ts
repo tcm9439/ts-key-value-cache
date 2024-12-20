@@ -1,20 +1,12 @@
-import { describe, it, expect } from "vitest";
-import { mockGetNow, MockCurrentTimeState, mockTimeByState } from "./mockTime.js";
+import { describe, it, expect } from "vitest"
+import { MockCurrentTime } from "./mockTime.js"
 
 describe("ts test util", () => {
-    it("mock current timestamp", () => {
-        let fakeNow = 1673519428
-        let times = [fakeNow, fakeNow+10000]
-        mockGetNow(times)
-        expect(Date.now()).toBe(fakeNow);
-        expect(Date.now()).toBe(fakeNow+10000);
-    });
-
     it("mock status", () => {
-        mockTimeByState();
-        MockCurrentTimeState.time = 0;
-        expect(Date.now()).toBe(0);
-        MockCurrentTimeState.time = 100;
-        expect(Date.now()).toBe(100);
+        MockCurrentTime.startMocking()
+        MockCurrentTime.time = 0
+        expect(Date.now()).toBe(0)
+        MockCurrentTime.time = 100
+        expect(Date.now()).toBe(100)
     })
-});
+})

@@ -1,4 +1,5 @@
-import { Integer, NullableNumber } from "@/util/CommonTypes.js"
+import { Integer, Timestamp } from "@/util/CommonTypes.js"
+import { Duration } from "@/util/Duration"
 
 /**
  * A key-value cache with string as key and value of any type.
@@ -9,66 +10,58 @@ import { Integer, NullableNumber } from "@/util/CommonTypes.js"
 export abstract class IKeyValueCache<V> {
     /**
      * Default ttl (seconds) of key-value pair if no ttl is supply when put()
-     * If undefined, never timeout
+     * If null, never timeout
      */
-    protected defaultTTL?: Integer
+    protected defaultTTL: Duration | null = null
     /**
      * Max num of key-value pair to store.
-     * If undefined, no limit
      */
-    protected maxSize?: Integer
+    protected maxSize: Integer
 
-    constructor(defaultTTL?: Integer, maxSize?: Integer) {
-        if (defaultTTL === 0) {
+    constructor(maxSize: Integer, defaultTTL?: Duration) {
+        if (defaultTTL?.inMicroseconds === 0) {
             // won't timeout
             defaultTTL = undefined
         }
-        this.defaultTTL = defaultTTL
+        this.defaultTTL = defaultTTL || null
         this.maxSize = maxSize
     }
 
     /**
-     * Check if this cache is full (> size).
-     * If maxSize is not set, return false
-     * If size == maxSize, return false
+     * Check if this cache is full (>= size).
      * @returns true if is full
      */
-    protected isOverflow(): boolean {
-        return this.maxSize ? this.size() > this.maxSize : false
+    isFull(): boolean {
+        return this.size() >= this.maxSize
     }
-
-    /**
-     * Remove the timeout item if it is still the ori item (not replaced by a new item with the same key).
-     * The callback function for the individual timeout.
-     */
-    protected removeTimeoutItem(key: string): void {
-        if (this.hasExpired(key)) {
-            this.delete(key)
-        }
-    }
-
-    /**
-     * Check if the item with the given key has already expired
-     * @param key
-     */
-    protected abstract hasExpired(key: string): boolean | undefined
 
     /**
      * Return value if found in cache & it is not yet expired.
-     * Otherwise, return undefined
+     * Otherwise, return null
      * @param key
      */
-    abstract get(key: string): V | undefined
+    abstract get(key: string): V | null
 
     /**
      * Put the item into cache.
      * If there is already a cache with the same key, this will replace the old one
      * & the expiredTS will be renew by the new ttl.
-     * @param key
-     * @param value
-     * @param ttl optional. Unit: second. If not given (undefined): will not expire. If given & is null: use this.defaultTTL
+     *
+     * If the cache is full, the first expired item will be deleted.
+     * (If no item is expired, the first item in the cache will be deleted)
+     * (As long as there is item with expiredTS, the un-expired item will not be deleted)
+     *
+     * @param ttl optional. If null: use defaultTTL
+     * @param noTtl If true: the item will never expire
      */
-    abstract put(key: string, value: V, ttl?: NullableNumber): void
+    abstract put(
+        key: string,
+        value: V,
+        param?: {
+            ttl?: Duration
+            noTtl?: boolean
+        }
+    ): void
 
     /**
      * Delete the item from cache with the given key if exists.
@@ -97,17 +90,4 @@ export abstract class IKeyValueCache<V> {
      * Delete the first expired item in the cache.
      */
     abstract deleteFirstExpiredItem(): void
-
-    /**
-     * Check if the index is too big.
-     * If the index is too big, the cache should be rebuild.
-     * @returns true if the index is too big
-     */
-    abstract isIndexTooBig(): boolean
-
-    /**
-     * Rebuild the index of the cache.
-     * As the delete() method will not remove the index of the item.
-     */
-    abstract rebuildIndex(): void
 }

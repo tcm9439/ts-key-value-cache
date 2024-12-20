@@ -1,14 +1,13 @@
 import { IMapStorage } from "./IMapStorage.js"
-import { CachedValue } from "@/types/CachedValue.js"
 
 export class MapStorageImpl<V> implements IMapStorage<V> {
-    private _store: Map<string, CachedValue<V>> = new Map()
+    private _store: Map<string, V> = new Map()
 
-    get(key: string): CachedValue<V> | undefined {
-        return this._store.get(key)
+    get(key: string): V | null {
+        return this._store.get(key) || null
     }
 
-    set(key: string, value: CachedValue<V>): void {
+    set(key: string, value: V): void {
         this._store.set(key, value)
     }
 
@@ -26,9 +25,5 @@ export class MapStorageImpl<V> implements IMapStorage<V> {
 
     size(): number {
         return this._store.size
-    }
-
-    entries(): IterableIterator<[string, CachedValue<V>]> {
-        return this._store.entries()
     }
 }
