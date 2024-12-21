@@ -1,8 +1,10 @@
 import { Integer } from "@/util/CommonTypes.js"
 import { isPositiveInteger } from "@/util/CommonConstrains.js"
-import { Duration } from "@/util/Duration"
-import { IKeyValueCache, IMapStorage, KeyValueCacheMap } from "@/cache"
-import { MapStorageImpl } from "@/cache/MapStorageImpl"
+import { Duration } from "@/util/Duration.js"
+import { IKeyValueCache } from "@/cache/IKeyValueCache.js"
+import { IMapStorage } from "@/cache/IMapStorage.js"
+import { KeyValueCacheMap } from "@/cache/KeyValueCacheMap.js"
+import { MapStorageImpl } from "@/cache/MapStorageImpl.js"
 
 export class CacheOption<V> {
     static readonly DEFAULT_MAX_SIZE = 100

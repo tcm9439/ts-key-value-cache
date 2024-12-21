@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest"
 import { MockCurrentTime } from "@test/util/mockTime"
 import { KeyValueCacheMap } from "@/cache/KeyValueCacheMap"
 import { cacheContentEqual } from "@test/util/assert"
-import { MapStorageImpl } from "@/cache"
+import { MapStorageImpl } from "@/cache/MapStorageImpl"
 import { Duration } from "@/util/Duration"
 
 describe("KeyValueCacheMap that all value will not expire", () => {

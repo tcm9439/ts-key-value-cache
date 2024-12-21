@@ -1,2 +1,5 @@
-export { Integer, Timestamp } from "@/util/CommonTypes.js"
+export { Integer } from "@/util/CommonTypes.js"
 export { CacheOption } from "@/config/CacheOption.js"
+export { Duration } from "@/util/Duration.js"
+export { IKeyValueCache } from "@/cache/IKeyValueCache.js"
+export { IMapStorage } from "@/cache/IMapStorage.js"

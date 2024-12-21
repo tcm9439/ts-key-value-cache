@@ -1,4 +1,4 @@
-import { CacheItemIndex } from "@/cache/CacheItemIndex"
+import { CacheItemIndex } from "@/cache/CacheItemIndex.js"
 
 export class TimeoutIndexMinHeap {
     /**

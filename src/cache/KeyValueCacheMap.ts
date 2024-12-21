@@ -1,8 +1,8 @@
-import { Duration } from "@/util/Duration"
-import { IKeyValueCache } from "@/cache/IKeyValueCache"
-import { IMapStorage } from "@/cache/IMapStorage"
-import { CacheItemIndex } from "@/cache/CacheItemIndex"
-import { TimeoutIndexMinHeap } from "@/util/TimeoutIndexMinHeap"
+import { Duration } from "@/util/Duration.js"
+import { IKeyValueCache } from "@/cache/IKeyValueCache.js"
+import { IMapStorage } from "@/cache/IMapStorage.js"
+import { CacheItemIndex } from "@/cache/CacheItemIndex.js"
+import { TimeoutIndexMinHeap } from "@/util/TimeoutIndexMinHeap.js"
 
 export class KeyValueCacheMap<V> extends IKeyValueCache<V> {
     private _store: IMapStorage<V>

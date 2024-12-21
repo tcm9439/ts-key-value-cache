@@ -1,5 +1,5 @@
 import { Integer, Timestamp } from "@/util/CommonTypes.js"
-import { Duration } from "@/util/Duration"
+import { Duration } from "@/util/Duration.js"
 
 /**
  * A key-value cache with string as key and value of any type.
